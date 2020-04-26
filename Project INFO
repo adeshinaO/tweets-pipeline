@@ -1,0 +1,109 @@
+
+
+	___________________________________________________________ Overview _____________________________________________________________
+	
+	 - Build a system that uses Kafka Streams to process a stream of Tweets and displays near real-time analytics on a site.
+	 - Keep the business logic simple, it doesn't have to make sense in a real-world setting. 
+	 - Main feature on frontend should be a grouped bar chart.
+	 
+	 	 
+	 - Analyze terminology used to describe the 2019 Coronavirus disease
+	 
+	__________________________________________________________ Tech __________________________________________________________________
+	
+			- Kafka
+			- Spring (Boot, WebSocket-STOMP, Data Mongo)
+			- Maven (Use Kafka Streams archetype as shown in the docs tutorial to generate stream processor)
+			- Docker
+			- Github Actions
+			- JUnit 5
+			- Thymeleaf
+			- ChartJS
+			- Stomp-JS
+			- MongoDB
+	
+	________________________________________________________ Actions _________________________________________________________________
+	
+		> Cleanup and reorganize POMs of project into a reactor build.
+		> Learn about Kafka Streams.......................................................................DONE
+		> Figure out(and draw) the entire architecture of the project and begin to scaffold it.
+		> Cleanup and reorganize the Maven deps in all JARS, add maven shade plugin where needed
+		> Layout WebSocket endpoint controller for serving processed data.
+		> Layout the frontend application for visualization of data.
+		> LEarn about Spring WebSocket.. see official tutorials.
+		> Learn about the kinds of data available from Twitter's API........................................DONE
+		> Layout the Kafka code for processing data.
+		> Decide on the DTO classes for moving data between componenets.
+		> Setup Github repo for the project and configure Github Actions
+		> Write all needed Dockerfiles
+		> Confirm access to Twitter Developer apps and the Filter/Statuses endpoints......DONE
+		> Write tests for the stream processing app using test utils module provide by Kafka.
+		
+		> See other data eng projects for inspiration on writing a good README.
+		> Draw architecture, described Topology for processing.
+		
+		
+		> Write a small program to test use of a properties file in /resources and loading into a Properties object.
+			--> Test too that the file will resolve ${} using maven environment config.
+			--> if it works: More options(e.g object values) can then be added to the Properties object as needed 
+			
+		> At end of project implement Kafka security for streams processor, producer and consumer.
+		
+		Notes on frontend:
+			-- Use STOMP as the websocket subprotocol.
+			-- Don't use any framework at all. Open a websocket connection in a normal JS file and update ChartJS.
+			-- see ChartJS documentation(other people's demos) for how to build grouped bar charts and update live data.
+			-- close websocket connection when page is closed.
+	
+	_______________________________________________ Architecture _____________________________________________________________________
+	
+	Three applications (1 web app, 2 executable JARs with main method) and one library:
+		
+		1. Extractor (stream producer).. Extracts tweets from Twitter's API and write them to the Input Topic.
+		2. The stream processing app... Reads tweets from input topic, applies transformations and writes to Output Topic.
+		3. Web app: reads from output topic into buffer records, updates frontend via Websocket and writes to Database.
+		4. [Library]: a common module that would contain:
+						-- Maven dependency for "kafka-clients" 
+						-- definition for DTOs and the custom JSON Serdes used in Kafka code. 
+		
+	______________________________________________________ Business Logic ____________________________________________________________
+	
+	Use Twitter's Filter/Track Streaming API to track certain keywords from certain locations.
+		-- Use Twitter web client to test search query operators before use. (write a small test app too)
+		-- e.g "Wuhan Virus" OR "Chinese Virus" OR "SARS-COV-2"
+		
+	
+		-- For every tweet, discard those where: places field is null, is a retweet, etc. Just orginal tweets or replies 
+	
+		--> Track use of 5 terms for COVID19 in 5 non-popular english speaking countries from different continents
+		--> Y-axis of grouped barchart is 0 - 100% , x-axis holds the countries.. the bars are the terms.
+		
+			Sars-Cov-2, COVID19, Chinese Virus, Wuhan Virus, Corona Virus <
+			USA, India, Nigeria, Australia, UK <
+			
+			GOAL: Show the use of each term as percentage of tweets processed from that country
+				e.g for 100 tweets from a country, if 34 mention Wuhan virus, The bar for Wuhan virus would be at 34% for that country
+		
+		Use Aggregate operations provided by Streams DSL or Implement new ones using Processor API:
+			-- create a KGroupedTable, using virus name as keys, country codes as values and number of tweets as row data.
+			i.e K,V store where K = term for pandemic and V = object with country codes as it's fields.
+				 V can also be an object which has the term has field and a Map<Country.Code, number> as another field
+					This way country codes are not hardcoded, but can still be sent over the wire as JSON.
+					
+					Transformation:
+					KStream has {term: "Chinese Virus", country: "US"} --> sent by producer in real time.
+						--> First groupByKey
+						-> then aggregate() into KTable by using _term_ as key, since the aggregate value is a map type update it.
+						 --> here initializer for aggregate() would be the value object ??
+						 
+						 			
+		
+					The web app that consumes the output topic can then calculate the percentages to be displayed.
+		
+		
+		
+		
+		
+		
+		
+		
