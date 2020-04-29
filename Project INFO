@@ -26,8 +26,8 @@
 	FINISH ENTIRE PROJECT USING EXACTLY 8 PULL REQUESTS:
 	DEADLINE: Friday, 15 - May - 2020
 
-	1. Setup the build of the entire project. Maven POMs and Github workflows........................IN PROGRESS
-	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module.
+	1. Setup the build of the entire project. Maven POMs and Github workflows........................DONE
+	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module........IN PROGRESS
 	3. Implement and test the common module.
     4. Implement and test the tweet-extractor module.
     5. Implement and test the tweet-processor module.
@@ -35,18 +35,16 @@
     7. Fix all issues discovered during project-wide testing.
     8. Beautify the UI; Make screencasts; Write a README;
 
-	First Pull Request______________________________________________________(1/8)__________________________________________
-		
-		> Configure build-test workflow
-		> Cleanup and reorganize POMs of project into a reactor build. Make _common_ a dependency of all others.
-		> Cleanup and reorganize the Maven deps in all JARS, add maven shade plugin where needed
-	__________________________________________________________________________________________________________________
+	Second PR______________________________________________________(2/8)________________________________________
 
         > Figure out the major classes needed by all modules and create them (empty with notes)
+        > Layout WebSocket endpoint controller for serving processed data.
+        > Layout the frontend code for visualization of data.
+	__________________________________________________________________________________________________________________
+
 		
 		> Figure out(and draw) the entire architecture of the project and begin to scaffold it.
-		> Layout WebSocket endpoint controller for serving processed data.
-		> Layout the frontend application for visualization of data.
+
 		> Learn about Spring WebSocket.. see official tutorials.
 
 		> Write all needed Dockerfiles..........
