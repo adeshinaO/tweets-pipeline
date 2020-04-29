@@ -5,7 +5,6 @@
 	 - Build a system that uses Kafka Streams to process a stream of Tweets and displays near real-time analytics on a site.
 	 - Keep the business logic simple, it doesn't have to make sense in a real-world setting. 
 	 - Main feature on frontend should be a grouped bar chart.
-	 
 	 	 
 	 - Analyze terminology used to describe the 2019 Coronavirus disease
 	 
@@ -23,25 +22,40 @@
 			- MongoDB
 	
 	________________________________________________________ Actions _________________________________________________________________
-	
-		> Cleanup and reorganize POMs of project into a reactor build.
-		> Learn about Kafka Streams.......................................................................DONE
-		> Figure out(and draw) the entire architecture of the project and begin to scaffold it.
+
+	FINISH ENTIRE PROJECT USING EXACTLY 8 PULL REQUESTS:
+	DEADLINE: Friday, 15 - May - 2020
+
+	1. Setup the build of the entire project. Maven POMs and Github workflows........................IN PROGRESS
+	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module.
+	3. Implement and test the common module.
+    4. Implement and test the tweet-extractor module.
+    5. Implement and test the tweet-processor module.
+    6. Implement and test the data-visualizer module.
+    7. Fix all issues discovered during project-wide testing.
+    8. Beautify the UI; Make screencasts; Write a README;
+
+	First Pull Request______________________________________________________(1/8)__________________________________________
+		
+		> Configure build-test workflow
+		> Cleanup and reorganize POMs of project into a reactor build. Make _common_ a dependency of all others.
 		> Cleanup and reorganize the Maven deps in all JARS, add maven shade plugin where needed
+	__________________________________________________________________________________________________________________
+
+        > Figure out the major classes needed by all modules and create them (empty with notes)
+		
+		> Figure out(and draw) the entire architecture of the project and begin to scaffold it.
 		> Layout WebSocket endpoint controller for serving processed data.
 		> Layout the frontend application for visualization of data.
-		> LEarn about Spring WebSocket.. see official tutorials.
-		> Learn about the kinds of data available from Twitter's API........................................DONE
-		> Layout the Kafka code for processing data.
-		> Decide on the DTO classes for moving data between componenets.
-		> Setup Github repo for the project and configure Github Actions
-		> Write all needed Dockerfiles
-		> Confirm access to Twitter Developer apps and the Filter/Statuses endpoints......DONE
+		> Learn about Spring WebSocket.. see official tutorials.
+
+		> Write all needed Dockerfiles..........
 		> Write tests for the stream processing app using test utils module provide by Kafka.
-		
+
 		> See other data eng projects for inspiration on writing a good README.
 		> Draw architecture, described Topology for processing.
-		
+
+		> Write a Test program to confirm that Okhttp supports the kind of streaming response twitter send.
 		
 		> Write a small program to test use of a properties file in /resources and loading into a Properties object.
 			--> Test too that the file will resolve ${} using maven environment config.
