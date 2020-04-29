@@ -4,7 +4,7 @@ package streamprocessor;
  * Hello world!
  *
  */
-public class App 
+public class TweetStreamProcessor
 {
     public static void main( String[] args )
     {

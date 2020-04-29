@@ -4,7 +4,7 @@ package tweetextractor;
  * Hello world!
  *
  */
-public class App 
+public class TweetExtractor
 {
     public static void main( String[] args )
     {
