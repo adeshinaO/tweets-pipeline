@@ -1,4 +1,4 @@
-![](https://github.com/abdulwahabO/covid19-terms-analytics/workflows/.github/workflows/build-test-workflow.yml/badge.svg)
+![](https://github.com/abdulwahabO/covid19-terms-analytics/workflows/CI/badge.svg)
 
 # Overview
 
