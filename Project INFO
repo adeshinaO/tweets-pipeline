@@ -18,13 +18,11 @@
 			- JUnit 5
 			- Thymeleaf
 			- ChartJS
-			- Stomp-JS
 			- MongoDB
 	
 	________________________________________________________ Actions _________________________________________________________________
 
 	FINISH ENTIRE PROJECT USING EXACTLY 8 PULL REQUESTS:
-	DEADLINE: Friday, 15 - May - 2020
 
 	1. Setup the build of the entire project. Maven POMs and Github workflows........................DONE
 	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module........IN PROGRESS
@@ -33,7 +31,10 @@
     5. Implement and test the tweet-processor module.
     6. Implement and test the data-visualizer module.
     7. Fix all issues discovered during project-wide testing.
-    8. Beautify the UI; Make screencasts; Write a README;
+    8. Beautify the UI; Make screencast; Write a README;
+
+    	DEADLINE: Friday, 15 - May - 2020
+
 
 	Second PR______________________________________________________(2/8)________________________________________
 
@@ -62,10 +63,10 @@
 		> At end of project implement Kafka security for streams processor, producer and consumer.
 		
 		Notes on frontend:
-			-- Use STOMP as the websocket subprotocol.
-			-- Don't use any framework at all. Open a websocket connection in a normal JS file and update ChartJS.
+			-- Use SSEmitter class with controller.. NO WEBSOCKETS, since messages are uni-directional.
+			-- Don't use any framework at all. USe EventSource API to consume SSE
 			-- see ChartJS documentation(other people's demos) for how to build grouped bar charts and update live data.
-			-- close websocket connection when page is closed.
+
 	
 	_______________________________________________ Architecture _____________________________________________________________________
 	
@@ -73,7 +74,7 @@
 		
 		1. Extractor (stream producer).. Extracts tweets from Twitter's API and write them to the Input Topic.
 		2. The stream processing app... Reads tweets from input topic, applies transformations and writes to Output Topic.
-		3. Web app: reads from output topic into buffer records, updates frontend via Websocket and writes to Database.
+		3. Web app: reads from output topic into buffer records, updates frontend via SSE and writes to Database.
 		4. [Library]: a common module that would contain:
 						-- Maven dependency for "kafka-clients" 
 						-- definition for DTOs and the custom JSON Serdes used in Kafka code. 
@@ -99,7 +100,7 @@
 		Use Aggregate operations provided by Streams DSL or Implement new ones using Processor API:
 			-- create a KGroupedTable, using virus name as keys, country codes as values and number of tweets as row data.
 			i.e K,V store where K = term for pandemic and V = object with country codes as it's fields.
-				 V can also be an object which has the term has field and a Map<Country.Code, number> as another field
+				 V can also be an object which has the term has field and a Map<CountryCode, number> as another field
 					This way country codes are not hardcoded, but can still be sent over the wire as JSON.
 					
 					Transformation:
@@ -111,11 +112,4 @@
 						 			
 		
 					The web app that consumes the output topic can then calculate the percentages to be displayed.
-		
-		
-		
-		
-		
-		
-		
 		

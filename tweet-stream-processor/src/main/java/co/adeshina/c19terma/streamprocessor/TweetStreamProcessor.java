@@ -1,4 +1,4 @@
-package streamprocessor;
+package co.adeshina.c19terma.streamprocessor;
 
 /**
  * Hello world!
@@ -6,8 +6,7 @@ package streamprocessor;
  */
 public class TweetStreamProcessor
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) {
         System.out.println( "Hello World!" );
     }
 }
