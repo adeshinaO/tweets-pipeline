@@ -7,7 +7,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 public class DataController {
 
-    // todo: To build a DataPacket, batch 
+    // todo: To build a DataPacket, batch aggregates
 
     // todo: DOn't use a DB: instead ensure the offset of a consumed TweetAggregate is not
     //       committed until the DataPacket the TA went into has been sent via SSE.
