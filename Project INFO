@@ -83,7 +83,7 @@
 	
 	Use Twitter's Filter/Track Streaming API to track certain keywords from certain locations.
 		-- Use Twitter web client to test search query operators before use. (write a small test app too)
-		-- e.g "Wuhan Virus" OR "Chinese Virus" OR "SARS-COV-2"
+		-- e.g "Wuhan Virus" OR "Chinese Virus" OR "SARS-COV-2" OR "COVID19"
 		
 	
 		-- For every tweet, discard those where: places field is null, is a retweet, etc. Just orginal tweets or replies 
