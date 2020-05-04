@@ -25,22 +25,20 @@
 	FINISH ENTIRE PROJECT USING EXACTLY 8 PULL REQUESTS:
 
 	1. Setup the build of the entire project. Maven POMs and Github workflows........................DONE
-	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module........IN PROGRESS
-	3. Implement and test the common module.
-    4. Implement and test the tweet-extractor module.
-    5. Implement and test the tweet-processor module.
-    6. Implement and test the data-visualizer module.
-    7. Fix all issues discovered during project-wide testing.
-    8. Beautify the UI; Make screencast; Write a README;
+	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module........DONE
+	3. Implement and test the common module..........................................................IN PROGRESS
+    4. Implement and test the tweet-extractor module........
+    5. Implement and test the tweet-processor module...........
+    6. Implement and test the data-visualizer module..............
+    7. Fix all issues discovered during project-wide testing...........
+    8. Beautify the UI; Make screencast; Write a README....................
 
-    	DEADLINE: Friday, 15 - May - 2020
+	THIRD PR______________________________________________________(3/8)________________________________________
 
-
-	Second PR______________________________________________________(2/8)________________________________________
-
-        > Figure out the major classes needed by all modules and create them (empty with notes)
-        > Layout WebSocket endpoint controller for serving processed data.
-        > Layout the frontend code for visualization of data.
+        > Implement DTO classes.
+        > Write custom JSON SERDE.
+        > Write Tests for SERDE.
+        > Javadoc where important.
 	__________________________________________________________________________________________________________________
 
 		
