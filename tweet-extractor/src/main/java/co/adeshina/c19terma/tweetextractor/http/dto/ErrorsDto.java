@@ -1,7 +1,10 @@
-package co.adeshina.c19terma.tweetextractor.http;
+package co.adeshina.c19terma.tweetextractor.http.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ErrorsDto {
 
     private List<Error> errors;
@@ -16,8 +19,16 @@ public class ErrorsDto {
         this.errors = errors;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Error {
         String message;
-        int code;
+        int httpStatusCode;
+        int errorCode;
+
+        @Override
+        public String toString() {
+
+            return "";
+        }
     }
 }

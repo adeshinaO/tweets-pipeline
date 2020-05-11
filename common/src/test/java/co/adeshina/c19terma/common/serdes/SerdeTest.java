@@ -5,6 +5,7 @@ import co.adeshina.c19terma.common.dto.TweetData;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SerdeTest {
 
@@ -17,22 +18,21 @@ public class SerdeTest {
         TweetData tweet = tweetJsonDeserializer.deserialize(null, tweetDataJson.getBytes());
 
         assertEquals("COVID19", aggregate.getTerm());
-        assertEquals(6, aggregate.getCountriesCount().get("GB"));
-        assertEquals("FR", tweet.getCountry());
+        assertEquals(5, aggregate.getCountByAccountType().get(TweetAggregate.AccountType.VERIFIED));
+        assertTrue(tweet.isVerifiedUser());
         assertEquals("COVID19", tweet.getTerm());
     }
 
     String tweetAggregateJson = "{\n"
             + "  \"term\": \"COVID19\",\n"
-            + "  \"countries_count\": {\n"
-            + "    \"US\": 5,\n"
-            + "    \"GB\": 6,\n"
-            + "    \"FR\": 5\n"
+            + "  \"acct_type_count\": {\n"
+            + "    \"verified_accounts\": 5,\n"
+            + "    \"unverified_accounts\": 6\n"
             + "  }\n"
             + "}";
 
     String tweetDataJson = "{\n"
             + "  \"term\": \"COVID19\",\n"
-            + "  \"country\": \"FR\"\n"
+            + "  \"is_verified_user\": \"true\"\n"
             + "}";
 }

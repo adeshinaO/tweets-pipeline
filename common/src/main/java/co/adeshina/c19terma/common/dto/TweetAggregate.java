@@ -7,8 +7,8 @@ public class TweetAggregate {
 
     private String term;
 
-    @JsonProperty("countries_count")
-    private Map<String, Integer> countriesCount;
+    @JsonProperty("acct_type_count")
+    private Map<AccountType, Integer> countByAccountType;
 
     public String getTerm() {
         return term;
@@ -18,11 +18,20 @@ public class TweetAggregate {
         this.term = term;
     }
 
-    public Map<String, Integer> getCountriesCount() {
-        return countriesCount;
+    public Map<AccountType, Integer> getCountByAccountType() {
+        return countByAccountType;
     }
 
-    public void setCountriesCount(Map<String, Integer> countriesCount) {
-        this.countriesCount = countriesCount;
+    public void setCountByAccountType(Map<AccountType, Integer> countByAccountType) {
+        this.countByAccountType = countByAccountType;
+    }
+
+    public enum AccountType {
+
+        @JsonProperty("verified_accounts")
+        VERIFIED,
+
+        @JsonProperty("unverified_accounts")
+        UNVERIFIED
     }
 }

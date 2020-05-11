@@ -11,7 +11,7 @@
 	__________________________________________________________ Tech __________________________________________________________________
 	
 			- Kafka
-			- Spring (Boot, WebSocket-STOMP, Data Mongo)
+			- Spring (Boot, Data Mongo)
 			- Maven (Use Kafka Streams archetype as shown in the docs tutorial to generate stream processor)
 			- Docker
 			- Github Actions
@@ -36,10 +36,11 @@
     8. Beautify the UI; Make screencast; Write a README....................
 
 
+
 	fourth PR______________________________________________________(4/8)________________________________________
 
 
-    > implement Twitter API client
+    > implement Twitter API clients
     > implement Kafka Producer
 
 	__________________________________________________________________________________________________________________
@@ -82,35 +83,41 @@
 		
 	______________________________________________________ Business Logic ____________________________________________________________
 	
-	Use Twitter's Filter/Track Streaming API to track certain keywords from certain locations.
-		-- Use Twitter web client to test search query operators before use. (write a small test app too)
-		-- e.g "Wuhan Virus" OR "Chinese Virus" OR "SARS-COV-2" OR "COVID19"
-		
+	Use Twitter's Fitered Streaming API to
 	
-		-- For every tweet, discard those where: places field is null, is a retweet, etc. Just orginal tweets or replies 
+		--> Use replies and original tweets.. NO retweets.
 	
-		--> Track use of 5 terms for COVID19 in 5 non-popular english speaking countries from different continents
-		--> Y-axis of grouped barchart is 0 - 100% , x-axis holds the countries.. the bars are the terms.
-		
-			Sars-Cov-2, COVID19, Chinese Virus, Wuhan Virus, Corona Virus <
-			USA, India, Nigeria, Australia, UK <
-			
-			GOAL: Show the use of each term as percentage of tweets processed from that country
-				e.g for 100 tweets from a country, if 34 mention Wuhan virus, The bar for Wuhan virus would be at 34% for that country
+		--> Track use of 5 terms for COVID19 and group by number of followers the users have.
+
+		    x-axis : Terminologies, e.g Sars-CoV-2, COVID19, Chinese virus, Wuhan Virus, Corona Virus.
+		    y-axis : Percent, 0 - 100
+
+		OBJECTIVE: Show the percentage of tweets that use each term among verified and unverified users.
+		----> E.g for 'Corona Virus' we could have 39% of unverified users and 27% of verified users.
 		
 		Use Aggregate operations provided by Streams DSL or Implement new ones using Processor API:
 			-- create a KGroupedTable, using virus name as keys, country codes as values and number of tweets as row data.
-			i.e K,V store where K = term for pandemic and V = object with country codes as it's fields.
-				 V can also be an object which has the term has field and a Map<CountryCode, number> as another field
+			i.e K,V store where K = term for pandemic,
+				 V = an object which has the term has field and a Map<CountryCode, number> as another field
 					This way country codes are not hardcoded, but can still be sent over the wire as JSON.
 					
 					Transformation:
 					KStream has {term: "Chinese Virus", country: "US"} --> sent by producer in real time.
 						--> First groupByKey
 						-> then aggregate() into KTable by using _term_ as key, since the aggregate value is a map type update it.
-						 --> here initializer for aggregate() would be the value object ??
+
+				INIATIALIZER for the KGroupedTable should layout the entire schema with zero values.
 						 
 						 			
 		
 					The web app that consumes the output topic can then calculate the percentages to be displayed.
 		
+_____________________________________________ AWS Deployment ________________________________________________________
+
+ > After testing local and writing README. Deploy to cloud using Github Actions?
+
+ > Describe the AWS architecture in README.
+
+ > Allow it run for 3/4 days and make screencasts.
+
+ > Tear it down properly to avoid costs.
