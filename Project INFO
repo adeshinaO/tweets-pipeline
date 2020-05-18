@@ -6,7 +6,7 @@
 	 - Keep the business logic simple, it doesn't have to make sense in a real-world setting. 
 	 - Main feature on frontend should be a grouped bar chart.
 	 	 
-	 - Analyze terminology used to describe the 2019 Coronavirus disease
+	 - Analyze terminology used to describe the 2019 novel Coronavirus disease
 	 
 	__________________________________________________________ Tech __________________________________________________________________
 	
@@ -22,9 +22,9 @@
 	
 	________________________________________________________ Actions _________________________________________________________________
 
-	FINISH ENTIRE PROJECT USING EXACTLY 8 PULL REQUESTS:
+	FINISH ENTIRE PROJECT USING EXACTLY 9 PULL REQUESTS:
 
-	        DEADLINE: MAY 18th
+	        DEADLINE: MAY 28th
 
 	1. Setup the build of the entire project. Maven POMs and Github workflows........................DONE
 	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module........DONE
@@ -32,12 +32,13 @@
     4. Implement and test the tweet-extractor module.................................................STARTED
     5. Implement and test the tweet-processor module...........
     6. Implement and test the data-visualizer module..............
-    7. Fix all issues discovered during project-wide testing...........
+    7. Fix all issues from testing and resolve outstanding TO DOs ........
     8. Beautify the UI; Make screencast; Write a README....................
+    9. Rename project and repository to covid19-analytis, package to c19a..................
 
 
 
-	fourth PR______________________________________________________(4/8)________________________________________
+	fourth PR______________________________________________________(4/9)________________________________________
 
 
     > implement Twitter API clients
@@ -48,13 +49,15 @@
 		
 		> Figure out(and draw) the entire architecture of the project and begin to scaffold it.
 
-		> Learn about Spring WebSocket.. see official tutorials.
+
 
 		> Write all needed Dockerfiles..........
 		> Write tests for the stream processing app using test utils module provide by Kafka.
 
 		> See other data eng projects for inspiration on writing a good README.
 		> Draw architecture, described Topology for processing.
+
+		> Configure Kafka to ensure exactly-once delivery semantics.
 
 		> Write a Test program to confirm that Okhttp supports the kind of streaming response twitter send.
 		
@@ -106,7 +109,7 @@
 						--> First groupByKey
 						-> then aggregate() into KTable by using _term_ as key, since the aggregate value is a map type update it.
 
-				INIATIALIZER for the KGroupedTable should layout the entire schema with zero values.
+				INITIALIZER for the KGroupedTable should layout the entire schema with zero values.
 						 
 						 			
 		
@@ -120,4 +123,4 @@ _____________________________________________ AWS Deployment ___________________
 
  > Allow it run for 3/4 days and make screencasts.
 
- > Tear it down properly to avoid costs.
+ > Tear down properly to AWS avoid costs.

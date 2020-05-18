@@ -1,0 +1,17 @@
+{
+  "add": [
+    {"value":  ""},
+    {"value":  ""},
+    {"value":  ""},
+    {"value":  ""},
+    {"value":  ""}
+  ]
+}
+
+
+
+{
+  "delete": {
+    "ids": ids.toString();
+  }
+}

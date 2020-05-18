@@ -2,22 +2,28 @@ package co.adeshina.c19terma.tweetextractor.http;
 
 import co.adeshina.c19terma.tweetextractor.exception.ApiClientException;
 import co.adeshina.c19terma.tweetextractor.http.dto.ErrorsDto;
+import co.adeshina.c19terma.tweetextractor.http.dto.RulesDto;
 import co.adeshina.c19terma.tweetextractor.http.dto.TweetDto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
 
 public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStreamApiClient {
+
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
 
     private final String RULES_URL = "";
     private final String STREAM_URL = "https://api.twitter.com/labs/1/tweets/stream/filter";
@@ -36,21 +42,58 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
         this.httpClient = httpClient;
     }
 
+
     @Override
-    public void resetRules(List<String> rules) throws ApiClientException {
+    public void resetRules(String rulesJson) throws ApiClientException {
 
-        // todo: first delete all existing rules..
+        bearerToken = bearerTokenApiClient.token();
 
-        // todo: build two requests and call this method.
+        Request request = new Request.Builder()
+                .url(RULES_URL)
+                .header("Authorization", "Bearer " + bearerToken)
+                .build();
+
         try {
-            execute(null);
+
+            Response response = execute(request);
+            RulesDto rulesDto = mapper.readValue(response.body().string(), RulesDto.class);
+
+            // Delete any existing rules.
+            if (!rulesDto.getData().isEmpty()) {
+
+                List<String> ids = new ArrayList<>();
+                for (RulesDto.Rule rule : rulesDto.getData()) {
+                    ids.add(rule.getId());
+                }
+
+                RequestBody requestBody = RequestBody.create("{\n"
+                        + "  \"delete\": {\n"
+                        + "    \"ids\":" + ids.toString() + "\n"
+                        + "  }\n"
+                        + "}", JSON_MEDIA_TYPE);
+
+                request = new Request.Builder()
+                        .url(RULES_URL)
+                        .header("Authorization", "Bearer " + bearerToken)
+                        .delete(requestBody)
+                        .build();
+
+                execute(request);
+            }
+
+            RequestBody requestBody = RequestBody.create(rulesJson, JSON_MEDIA_TYPE);
+            request = new Request.Builder()
+                    .url(RULES_URL)
+                    .header("Authorization", "Bearer " + bearerToken)
+                    .post(requestBody)
+                    .build();
+
+            execute(request);
+
         } catch (IOException e) {
-            throw new ApiClientException(null, e); // todo
+            throw new ApiClientException("", e); // todo
         }
 
-        // todo: then create new ones....
-
-        // if error code
     }
 
     @Override
@@ -91,7 +134,12 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
         if (!response.isSuccessful() && Integer.toString(response.code()).equals("401")) {
 
             bearerToken = bearerTokenApiClient.refreshToken();
+
+            // todo: So what happens if this call is also unsuccessful?
+            //       Rework this, use a while-loop to try requests twice.
             response = httpClient.newCall(request).execute();
+
+
         } else if (responseBody != null) {
 
             ErrorsDto errors = mapper.readValue(responseBody.string(), ErrorsDto.class);

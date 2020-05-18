@@ -3,7 +3,7 @@ package co.adeshina.c19terma.tweetextractor;
 import java.util.Map;
 import java.util.Properties;
 
-public class PropertiesHelper {
+class PropertiesHelper {
 
     private Properties properties = new Properties();
 
@@ -37,6 +37,8 @@ public class PropertiesHelper {
 
     private void loadProperties() {
         // todo: properties.load(..); from app.props file
+
+
     }
 
 

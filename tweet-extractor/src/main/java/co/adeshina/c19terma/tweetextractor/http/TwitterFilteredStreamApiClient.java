@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 
 public interface TwitterFilteredStreamApiClient {
 
-    // cleanup any old rules and replace with 'rules'
-    void resetRules(List<String> rules) throws ApiClientException;
+    // todo: cleanup any old rules and replace with 'rules'
+    void resetRules(String rulesJson) throws ApiClientException;
 
     // todo: use consumer to process tweets
     void connect(Consumer<TweetDto> tweetConsumer) throws ApiClientException;

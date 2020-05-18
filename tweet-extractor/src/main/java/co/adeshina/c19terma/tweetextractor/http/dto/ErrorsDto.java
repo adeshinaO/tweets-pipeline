@@ -8,9 +8,6 @@ import java.util.List;
 public class ErrorsDto {
 
     private List<Error> errors;
-
-    // todo: whenever twitter return 40X, map response body to this
-
     public List<Error> getErrors() {
         return errors;
     }
@@ -21,14 +18,38 @@ public class ErrorsDto {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Error {
-        String message;
-        int httpStatusCode;
-        int errorCode;
+
+        private String message;
+        private int httpStatusCode;
+        private int errorCode;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public int getHttpStatusCode() {
+            return httpStatusCode;
+        }
+
+        public void setHttpStatusCode(int httpStatusCode) {
+            this.httpStatusCode = httpStatusCode;
+        }
+
+        public int getErrorCode() {
+            return errorCode;
+        }
+
+        public void setErrorCode(int errorCode) {
+            this.errorCode = errorCode;
+        }
 
         @Override
         public String toString() {
-
-            return "";
+            return String.format("Message: %s \nHTTP Code: %s\n Error Code: %d", message, httpStatusCode, errorCode);
         }
     }
 }
