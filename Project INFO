@@ -12,7 +12,7 @@
 	
 			- Kafka
 			- Spring (Boot, Data Mongo)
-			- Maven (Use Kafka Streams archetype as shown in the docs tutorial to generate stream processor)
+			- Maven (Uselogger for Java Kafka Streams archetype as shown in the docs tutorial to generate stream processor)
 			- Docker
 			- Github Actions
 			- JUnit 5
@@ -22,23 +22,24 @@
 	
 	________________________________________________________ Actions _________________________________________________________________
 
-	FINISH ENTIRE PROJECT USING EXACTLY 9 PULL REQUESTS:
+	FINISH ENTIRE PROJECT USING EXACTLY 10 PULL REQUESTS:
 
-	        DEADLINE: MAY 28th
+	        DEADLINE: MAY 31st
 
 	1. Setup the build of the entire project. Maven POMs and Github workflows........................DONE
 	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module........DONE
 	3. Implement and test the common module..........................................................DONE
-    4. Implement and test the tweet-extractor module.................................................STARTED
+    4. Implement and test the tweet-extractor module.................................................DONE
     5. Implement and test the tweet-processor module...........
     6. Implement and test the data-visualizer module..............
-    7. Fix all issues from testing and resolve outstanding TO DOs ........
-    8. Beautify the UI; Make screencast; Write a README....................
-    9. Rename project and repository to covid19-analytis, package to c19a..................
+    7. Setup logging for all executable JARs and resolve logging TODOs
+    8. Resolve all issues from manual testing and write comprehensive unit tests.......
+    9. Beautify the UI; Make screencast; Write a README....................
+    10. Rename project and repository to covid19-tweets-analytis, package to c19a..................
 
 
 
-	fourth PR______________________________________________________(4/9)________________________________________
+	fourth PR______________________________________________________(4/10)________________________________________
 
 
     > implement Twitter API clients
@@ -46,10 +47,8 @@
 
 	__________________________________________________________________________________________________________________
 
-		
-		> Figure out(and draw) the entire architecture of the project and begin to scaffold it.
 
-
+        > Refactor API clients in `extractor` and test them using Square's MockWebServer
 
 		> Write all needed Dockerfiles..........
 		> Write tests for the stream processing app using test utils module provide by Kafka.
@@ -58,6 +57,8 @@
 		> Draw architecture, described Topology for processing.
 
 		> Configure Kafka to ensure exactly-once delivery semantics.
+
+		> Build extractor and stream processor with `mvn -B package`
 
 		> Write a Test program to confirm that Okhttp supports the kind of streaming response twitter send.
 		
