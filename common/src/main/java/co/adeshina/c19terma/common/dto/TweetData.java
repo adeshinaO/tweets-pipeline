@@ -1,11 +1,13 @@
 package co.adeshina.c19terma.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TweetData {
 
     private String term;
 
-    // 2-letter ISO code.
-    private String country;
+    @JsonProperty("is_verified_user")
+    private boolean verifiedUser;
 
     public String getTerm() {
         return term;
@@ -15,11 +17,11 @@ public class TweetData {
         this.term = term;
     }
 
-    public String getCountry() {
-        return country;
+    public boolean isVerifiedUser() {
+        return verifiedUser;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setVerifiedUser(boolean verifiedUser) {
+        this.verifiedUser = verifiedUser;
     }
 }

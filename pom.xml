@@ -96,8 +96,8 @@
 
     <modules>
         <module>common</module>
-        <module>tweet-extractor</module>
-        <module>tweet-stream-processor</module>
+        <module>extractor</module>
+        <module>processor</module>
         <module>data-visualizer</module>
     </modules>
 
