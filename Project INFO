@@ -87,7 +87,7 @@
 		
 	______________________________________________________ Business Logic ____________________________________________________________
 	
-	Use Twitter's Fitered Streaming API to
+	Use Twitter's Filtered Streaming API to
 	
 		--> Use replies and original tweets.. NO retweets.
 	
