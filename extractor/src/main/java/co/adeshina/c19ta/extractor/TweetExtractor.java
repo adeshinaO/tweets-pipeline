@@ -11,8 +11,8 @@ import co.adeshina.c19ta.extractor.http.TwitterUserApiClientImpl;
 import co.adeshina.c19ta.extractor.http.dto.UserDto;
 import co.adeshina.c19ta.common.dto.TweetData;
 import co.adeshina.c19ta.extractor.http.TwitterUserApiClient;
-
 import co.adeshina.c19ta.extractor.kafka.KafkaProducerService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +87,7 @@ public class TweetExtractor {
         return result;
     }
 
-    public static final String STREAM_RULES = "{\n"
+    private static final String STREAM_RULES = "{\n"
             + "  \"add\": [\n"
             + "    {\"value\":  \"\\\"SARS-CoV-2\\\"\"},\n"
             + "    {\"value\":  \"COVID19\"},\n"

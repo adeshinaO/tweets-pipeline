@@ -1,6 +1,8 @@
 package co.adeshina.c19ta.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class TweetAggregate {
@@ -19,11 +21,11 @@ public class TweetAggregate {
     }
 
     public Map<AccountType, Integer> getCountByAccountType() {
-        return countByAccountType;
+        return new HashMap<>(countByAccountType);
     }
 
     public void setCountByAccountType(Map<AccountType, Integer> countByAccountType) {
-        this.countByAccountType = countByAccountType;
+        this.countByAccountType = new HashMap<>(countByAccountType);
     }
 
     public enum AccountType {
