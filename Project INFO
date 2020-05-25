@@ -87,7 +87,7 @@
 		
 	______________________________________________________ Business Logic ____________________________________________________________
 	
-	Use Twitter's Fitered Streaming API to
+	Use Twitter's Filtered Streaming API to
 	
 		--> Use replies and original tweets.. NO retweets.
 	
@@ -106,7 +106,7 @@
 					This way country codes are not hardcoded, but can still be sent over the wire as JSON.
 					
 					Transformation:
-					KStream has {term: "Chinese Virus", country: "US"} --> sent by producer in real time.
+					KStream has {term: "Chinese Virus", is_verified: true} --> sent by producer in real time.
 						--> First groupByKey
 						-> then aggregate() into KTable by using _term_ as key, since the aggregate value is a map type update it.
 
