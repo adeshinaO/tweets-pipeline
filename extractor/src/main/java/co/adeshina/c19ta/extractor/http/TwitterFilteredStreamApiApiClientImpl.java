@@ -42,7 +42,6 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
         this.httpClient = httpClient;
     }
 
-
     @Override
     public void resetRules(String rulesJson) throws ApiClientException {
 
@@ -91,9 +90,8 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
             execute(request);
 
         } catch (IOException e) {
-            throw new ApiClientException("", e); // todo
+            throw new ApiClientException("Failed to establish connection to API", e);
         }
-
     }
 
     @Override
@@ -106,7 +104,6 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
                 .header("Authorization", "Bearer " + bearerToken)
                 .build();
 
-        // Todo: need to test and perfect this impl of http streaming with a small program before testing this..
         try {
 
             Response response = execute(request);
@@ -134,14 +131,14 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
         if (!response.isSuccessful() && Integer.toString(response.code()).equals("401")) {
 
             bearerToken = bearerTokenApiClient.refreshToken();
-
-            // todo: So what happens if this call is also unsuccessful?
-            //       Rework this, use a while-loop to try requests twice.
             response = httpClient.newCall(request).execute();
 
+            if(!response.isSuccessful()){
+                ErrorsDto errors = mapper.readValue(responseBody.string(), ErrorsDto.class);
+                throw new ApiClientException(errors.getErrors().get(0).toString());
+            }
 
-        } else if (responseBody != null) {
-
+        } else if (!response.isSuccessful() && responseBody != null) {
             ErrorsDto errors = mapper.readValue(responseBody.string(), ErrorsDto.class);
             throw new ApiClientException(errors.getErrors().get(0).toString());
         } else {

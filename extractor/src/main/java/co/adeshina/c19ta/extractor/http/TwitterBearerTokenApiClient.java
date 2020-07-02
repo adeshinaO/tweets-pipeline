@@ -2,12 +2,24 @@ package co.adeshina.c19ta.extractor.http;
 
 import co.adeshina.c19ta.extractor.exception.ApiClientException;
 
-// todo:: javadoc
+/**
+ * Twitter API client for managing access tokens.
+ */
 public interface TwitterBearerTokenApiClient {
 
-    // todo: returns the Oauth 2 bearer token..
+    /**
+     * Obtains a new access token.
+     *
+     * @return a new access token.
+     * @throws ApiClientException on failure to establish a connection to Twitter's API.
+     */
     String token() throws ApiClientException;
 
-    // todo: only called if old token has expired. i.e HTTP response code = 401 and error.code = 89
+    /**
+     * Should be called when access tokens expire.
+     *
+     * @return A new access token.
+     * @throws ApiClientException on failure to establish a connection to Twitter's API.
+     */
     String refreshToken() throws ApiClientException;
 }

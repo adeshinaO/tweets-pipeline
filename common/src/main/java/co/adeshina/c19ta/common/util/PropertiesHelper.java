@@ -9,8 +9,6 @@ import java.util.Properties;
 
 public class PropertiesHelper {
 
-    // TODO: Logger
-
     public static final String KAFKA_BOOTSTRAP_SERVERS = "kafka.bootstrap.servers";
     public static final String KAFKA_EXTRACTOR_ID = "kafka.extractor.id";
     public static final String KAFKA_PROCESSOR_ID = "kafka.processor.id";
@@ -61,7 +59,6 @@ public class PropertiesHelper {
                 }
             }
 
-            // TODO: Log success of properties loading...
         } catch (IOException e) {
             throw new PropertiesInitFailedException("Failed to load properties from file", e);
         }

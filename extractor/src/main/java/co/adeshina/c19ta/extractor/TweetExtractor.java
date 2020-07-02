@@ -12,6 +12,7 @@ import co.adeshina.c19ta.extractor.http.dto.UserDto;
 import co.adeshina.c19ta.common.dto.TweetData;
 import co.adeshina.c19ta.extractor.http.TwitterUserApiClient;
 import co.adeshina.c19ta.extractor.kafka.KafkaProducerService;
+import co.adeshina.c19ta.extractor.kafka.KafkaProducerServiceImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,15 +20,19 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
+
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TweetExtractor {
 
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+    private static Logger logger = LoggerFactory.getLogger(TweetExtractor.class);
 
     public static void main(String[] args) throws PropertiesInitFailedException, ApiClientException {
 
-        PropertiesHelper propertiesHelper = new PropertiesHelper("application.properties");
+        PropertiesHelper propertiesHelper = new PropertiesHelper("common.properties");
         Map<String, String> kafkaProps = propertiesHelper.kafkaProperties();
         Map<String, String> twitterProps = propertiesHelper.twitterProperties();
 
@@ -36,7 +41,8 @@ public class TweetExtractor {
         kafkaProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProps.get(PropertiesHelper.KAFKA_BOOTSTRAP_SERVERS));
         kafkaProps.put(ProducerConfig.CLIENT_ID_CONFIG, kafkaProps.get(PropertiesHelper.KAFKA_EXTRACTOR_ID));
 
-        KafkaProducerService kafkaService = new KafkaProducerService(kafkaConfig, kafkaProps.get(PropertiesHelper.KAFKA_INPUT_TOPIC));
+        KafkaProducerService<TweetData> kafkaService = new KafkaProducerServiceImpl(kafkaConfig,
+                kafkaProps.get(PropertiesHelper.KAFKA_INPUT_TOPIC));
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaService::close));
 
         String twitterConsumerSecret = twitterProps.get(PropertiesHelper.TWITTER_CONSUMER_SECRET);
@@ -66,16 +72,16 @@ public class TweetExtractor {
                     data.setVerifiedUser(userDto.isVerified());
                     kafkaService.send(term, data);
                 }
-
             } catch (ApiClientException e) {
-                // todo: logger - will skip this DTO
+                String msg = "Could not retrieve data for author with id: " + authorId;
+                logger.error(msg, e);
             }
         });
     }
 
     private static List<String> findTerms(String tweet) {
 
-        String[] terms = {"Chinese Virus", "SARS-CoV-2", "Wuhan Virus", "coronavirus"};
+        String[] terms = {"Chinese Virus", "SARS-CoV-2", "Wuhan Virus", "coronavirus", "COVID-19"};
         List<String> result = new ArrayList<>();
 
         for (String term: terms) {
@@ -90,7 +96,7 @@ public class TweetExtractor {
     private static final String STREAM_RULES = "{\n"
             + "  \"add\": [\n"
             + "    {\"value\":  \"\\\"SARS-CoV-2\\\"\"},\n"
-            + "    {\"value\":  \"COVID19\"},\n"
+            + "    {\"value\":  \"COVID-19\"},\n"
             + "    {\"value\":  \"coronavirus\"},\n"
             + "    {\"value\":  \"\\\"Chinese Virus\\\"\"},\n"
             + "    {\"value\":  \"\\\"Wuhan Virus\\\"\"}\n"

@@ -1,12 +1,7 @@
 
 
 	___________________________________________________________ Overview _____________________________________________________________
-	
-	 - Build a system that uses Kafka Streams to process a stream of Tweets and displays near real-time analytics on a site.
-	 - Keep the business logic simple, it doesn't have to make sense in a real-world setting. 
-	 - Main feature on frontend should be a grouped bar chart.
-	 	 
-	 - Analyze terminology used to describe the 2019 novel Coronavirus disease
+
 	 
 	__________________________________________________________ Tech __________________________________________________________________
 	
@@ -18,61 +13,27 @@
 			- JUnit 5
 			- Thymeleaf
 			- ChartJS
-			- MongoDB
 	
 	________________________________________________________ Actions _________________________________________________________________
 
-	FINISH ENTIRE PROJECT USING EXACTLY 10 PULL REQUESTS:
-
-	        DEADLINE: MAY 31st
-
-	1. Setup the build of the entire project. Maven POMs and Github workflows........................DONE
-	2. Identify and scaffold(with notes) all the classes/files/packages needed in each module........DONE
-	3. Implement and test the common module..........................................................DONE
-    4. Implement and test the tweet-extractor module.................................................DONE
-    5. Implement and test the tweet-processor module...........
-    6. Implement and test the data-visualizer module..............
-    7. Setup logging for all executable JARs and resolve logging TODOs
-    8. Resolve all issues from manual testing and write comprehensive unit tests.......
-    9. Beautify the UI; Make screencast; Write a README....................
-    10. Rename project and repository to covid19-tweets-analytis, package to c19a..................
-
-
-
-	fourth PR______________________________________________________(4/10)________________________________________
-
-
-    > implement Twitter API clients
-    > implement Kafka Producer
-
+    0. Obtain twitter app credentials.
+    1. Test the whole System manually.
+    2. Beautify the UI; Make screencast; Write a README.
+    3. Rename project and repository to covid19-tweets-analytis, package to c19a
 	__________________________________________________________________________________________________________________
 
-
         > Refactor API clients in `extractor` and test them using Square's MockWebServer
+        > Also use Generics where possible.
 
-		> Write all needed Dockerfiles..........
 		> Write tests for the stream processing app using test utils module provide by Kafka.
 
 		> See other data eng projects for inspiration on writing a good README.
-		> Draw architecture, described Topology for processing.
+		> Draw architecture, describe Topology for processing.
 
 		> Configure Kafka to ensure exactly-once delivery semantics.
-
 		> Build extractor and stream processor with `mvn -B package`
-
-		> Write a Test program to confirm that Okhttp supports the kind of streaming response twitter send.
-		
-		> Write a small program to test use of a properties file in /resources and loading into a Properties object.
-			--> Test too that the file will resolve ${} using maven environment config.
-			--> if it works: More options(e.g object values) can then be added to the Properties object as needed 
 			
 		> At end of project implement Kafka security for streams processor, producer and consumer.
-		
-		Notes on frontend:
-			-- Use SSEmitter class with controller.. NO WEBSOCKETS, since messages are uni-directional.
-			-- Don't use any framework at all. USe EventSource API to consume SSE
-			-- see ChartJS documentation(other people's demos) for how to build grouped bar charts and update live data.
-
 	
 	_______________________________________________ Architecture _____________________________________________________________________
 	
@@ -111,17 +72,6 @@
 						-> then aggregate() into KTable by using _term_ as key, since the aggregate value is a map type update it.
 
 				INITIALIZER for the KGroupedTable should layout the entire schema with zero values.
-						 
-						 			
-		
+
 					The web app that consumes the output topic can then calculate the percentages to be displayed.
-		
-_____________________________________________ AWS Deployment ________________________________________________________
 
- > After testing local and writing README. Deploy to cloud using Github Actions?
-
- > Describe the AWS architecture in README.
-
- > Allow it run for 3/4 days and make screencasts.
-
- > Tear down properly to AWS avoid costs.
