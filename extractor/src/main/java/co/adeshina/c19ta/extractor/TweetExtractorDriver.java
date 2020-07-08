@@ -58,7 +58,7 @@ public class TweetExtractorDriver {
         TwitterUserApiClient userApiClient = new TwitterUserApiClientImpl(bearerTokenApiClient, HTTP_CLIENT);
 
         TweetExtractor extractor = new TweetExtractor(streamApiClient, userApiClient, kafkaService);
-        logger.info("Starting tweet extractor");
         extractor.start();
+        logger.info("Extractor config complete. Starting Extractor");
     }
 }
