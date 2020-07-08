@@ -30,6 +30,7 @@ public class TweetExtractorDriver {
 
     public static void main(String[] args) throws PropertiesInitFailedException, ApiClientException {
 
+        logger.info("Extractor config started");
         PropertiesHelper propertiesHelper = new PropertiesHelper("common.properties");
         Map<String, String> kafkaProps = propertiesHelper.kafkaProperties();
         Map<String, String> twitterProps = propertiesHelper.twitterProperties();
@@ -58,7 +59,7 @@ public class TweetExtractorDriver {
         TwitterUserApiClient userApiClient = new TwitterUserApiClientImpl(bearerTokenApiClient, HTTP_CLIENT);
 
         TweetExtractor extractor = new TweetExtractor(streamApiClient, userApiClient, kafkaService);
-        logger.info("Starting tweet extractor");
         extractor.start();
+        logger.info("Extractor config complete. Starting Extractor");
     }
 }

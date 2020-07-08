@@ -13,7 +13,12 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.kstream.Aggregator;
 import org.apache.kafka.streams.kstream.Initializer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StreamProcessorUtil {
+
+    private static Logger logger = LoggerFactory.getLogger(StreamProcessor.class);
 
     protected static final Serde<TweetData> TWEET_DATA_SERDE =
             Serdes.serdeFrom(new TweetDataSerde(), new TweetDataSerde());
@@ -34,6 +39,11 @@ public class StreamProcessorUtil {
 
     protected static final Aggregator<String, TweetData, TweetAggregate> AGGREGATOR = ((key, tweet, aggregate) -> {
 
+        if (aggregate.getTerm() == null) {
+            logger.info("Setting key(" + key + ") for a new aggregate");
+            aggregate.setTerm(key);
+        }
+
         Map<TweetAggregate.AccountType, Integer> countMap = aggregate.getCountByAccountType();
 
         if (tweet.isVerifiedUser()) {
@@ -44,11 +54,8 @@ public class StreamProcessorUtil {
             countMap.put(TweetAggregate.AccountType.UNVERIFIED, oldCount + 1);
         }
 
+        logger.info("Merged one tweet into the aggregate");
         aggregate.setCountByAccountType(countMap);
-
-        if (aggregate.getTerm() == null) {
-            aggregate.setTerm(key);
-        }
 
         return aggregate;
     });

@@ -22,10 +22,14 @@ import okhttp3.ResponseBody;
 
 import okio.BufferedSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStreamApiClient {
 
-    private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
+    private Logger logger = LoggerFactory.getLogger(TwitterFilteredStreamApiClient.class);
 
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
     private static final String RULES_URL = "https://api.twitter.com/labs/1/tweets/stream/filter/rules";
     private static final String STREAM_URL = "https://api.twitter.com/labs/1/tweets/stream/filter";
 
@@ -113,8 +117,9 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
 
             while (openConnection) {
                 if (!bufferedSource.exhausted()) {
-                    TweetDto data = mapper.readValue(bufferedSource.readString(StandardCharsets.UTF_8), TweetDto.class);
-                    tweetConsumer.accept(data);
+                    String data = bufferedSource.readString(StandardCharsets.UTF_8);
+                    logger.info("New data from stream: " + data);
+                    tweetConsumer.accept(mapper.readValue(data, TweetDto.class));
                 } else {
                     openConnection = false;
                 }
@@ -131,6 +136,7 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
 
         if (!response.isSuccessful() && Integer.toString(response.code()).equals("401")) {
 
+            logger.info("Bearer token has expired. Will attempt a token refresh");
             bearerToken = bearerTokenApiClient.refreshToken();
             response = httpClient.newCall(request).execute();
 

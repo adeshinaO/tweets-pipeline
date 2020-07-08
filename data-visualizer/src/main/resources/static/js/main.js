@@ -51,7 +51,7 @@ chart = new Chart(ctx, {
   options: chartOptions
 });
 
-const evtSource = new EventSource('/covid19-data');
+const evtSource = new EventSource('/data');
 
 evtSource.onerror = function() {
   console.log("Error!"); // todo: better message

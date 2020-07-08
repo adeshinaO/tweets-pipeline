@@ -16,8 +16,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TwitterBearerTokenApiApiClientImpl implements TwitterBearerTokenApiClient {
+
+    private Logger logger = LoggerFactory.getLogger(TwitterBearerTokenApiClient.class);
 
     private final static String BEARER_TOKEN_URL = "https://api.twitter.com/oauth/token";
     private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
@@ -73,6 +77,8 @@ public class TwitterBearerTokenApiApiClientImpl implements TwitterBearerTokenApi
 
             BearerTokenDto tokenDto = mapper.readValue(responseBody.string(), BearerTokenDto.class);
             bearerToken = tokenDto.getAccessToken();
+            logger.info("Obtained API bearer token: " + bearerToken.substring(0, bearerToken.length()/2) + "...");
+
         } catch (Exception e) {
             throw new ApiClientException("Failed to obtain bearer token", e);
         }
