@@ -13,7 +13,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TwitterUserApiClientImpl implements TwitterUserApiClient {
+
+    private Logger logger = LoggerFactory.getLogger(TwitterUserApiClient.class);
 
     private String userApiUrl = "https://api.twitter.com/1.1/users/show.json";
     private final ObjectMapper mapper = new ObjectMapper();
@@ -40,6 +45,7 @@ public class TwitterUserApiClientImpl implements TwitterUserApiClient {
 
             if (failedRequest && Integer.toString(response.code()).equals("401")) {
 
+                logger.info("Bearer token has expired. Will attempt token refresh");
                 authToken = bearerTokenApiClient.refreshToken();
 
                 response = httpClient.newCall(requestHelper(id, authToken)).execute();
@@ -57,6 +63,7 @@ public class TwitterUserApiClientImpl implements TwitterUserApiClient {
                 throw new ApiClientException(response.toString());
             }
 
+            logger.info("Found user with id: " + id);
             return mapper.readValue(responseBody.string(), UserDto.class);
 
         } catch (IOException e) {

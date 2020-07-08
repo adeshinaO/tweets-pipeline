@@ -55,6 +55,7 @@ public class TweetExtractor {
                                       .map(mapper)
                                       .forEach(data -> kafkaProducerService.send(data.getTerm(), data));
 
+            logger.info("Consumed one new tweet and sent tweet data to Kafka");
         } catch (ApiClientException e) {
             String msg = "Could not retrieve data for user with id: " + tweet.getAuthorId();
             logger.error(msg, e);
