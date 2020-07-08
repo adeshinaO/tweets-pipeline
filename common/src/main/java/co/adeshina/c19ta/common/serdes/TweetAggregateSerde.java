@@ -3,7 +3,9 @@ package co.adeshina.c19ta.common.serdes;
 import co.adeshina.c19ta.common.dto.TweetAggregate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Map;
+
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
 

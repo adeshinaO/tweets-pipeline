@@ -3,8 +3,11 @@ package co.adeshina.c19ta.extractor.http;
 import co.adeshina.c19ta.extractor.exception.ApiClientException;
 import co.adeshina.c19ta.extractor.http.dto.ErrorsDto;
 import co.adeshina.c19ta.extractor.http.dto.UserDto;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -27,14 +30,9 @@ public class TwitterUserApiClientImpl implements TwitterUserApiClient {
     public UserDto findUser(String id) throws ApiClientException {
 
         userApiUrl += userApiUrl + "?user_id=" + id;
-
         String authToken = bearerTokenApiClient.token();
+        Request request = requestHelper(id, authToken);
 
-        // todo: use in loop?
-        Request request = new Request.Builder()
-                .url(userApiUrl)
-                .header("Authorization", "Bearer " + authToken)
-                .build();
         try {
             Response response = httpClient.newCall(request).execute();
             ResponseBody responseBody = response.body();
@@ -44,10 +42,13 @@ public class TwitterUserApiClientImpl implements TwitterUserApiClient {
 
                 authToken = bearerTokenApiClient.refreshToken();
 
-                // todo: So what happens if this call is also unsuccessful?
-                //       Rework this, use a while-loop to try requests twice.
-                response = httpClient.newCall(request).execute();
+                response = httpClient.newCall(requestHelper(id, authToken)).execute();
                 responseBody = response.body();
+
+                if(!response.isSuccessful()) {
+                    ErrorsDto errors = mapper.readValue(responseBody.string(), ErrorsDto.class);
+                    throw new ApiClientException(errors.getErrors().get(0).toString());
+                }
 
             } else if (failedRequest & responseBody != null) {
                 ErrorsDto errors = mapper.readValue(responseBody.string(), ErrorsDto.class);
@@ -61,5 +62,14 @@ public class TwitterUserApiClientImpl implements TwitterUserApiClient {
         } catch (IOException e) {
             throw new ApiClientException("Failed to retrieve user with ID: " + id, e);
         }
+    }
+
+    private Request requestHelper(String userId, String authToken) {
+        userApiUrl += userApiUrl + "?user_id=" + userId;
+
+        return new Request.Builder()
+                .url(userApiUrl)
+                .header("Authorization", "Bearer " + authToken)
+                .build();
     }
 }

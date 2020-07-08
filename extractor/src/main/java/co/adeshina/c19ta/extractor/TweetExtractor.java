@@ -1,96 +1,76 @@
 package co.adeshina.c19ta.extractor;
 
-import co.adeshina.c19ta.common.util.PropertiesHelper;
-import co.adeshina.c19ta.extractor.exception.ApiClientException;
-import co.adeshina.c19ta.common.util.PropertiesInitFailedException;
-import co.adeshina.c19ta.extractor.http.TwitterBearerTokenApiApiClientImpl;
-import co.adeshina.c19ta.extractor.http.TwitterBearerTokenApiClient;
-import co.adeshina.c19ta.extractor.http.TwitterFilteredStreamApiApiClientImpl;
-import co.adeshina.c19ta.extractor.http.TwitterFilteredStreamApiClient;
-import co.adeshina.c19ta.extractor.http.TwitterUserApiClientImpl;
-import co.adeshina.c19ta.extractor.http.dto.UserDto;
 import co.adeshina.c19ta.common.dto.TweetData;
+import co.adeshina.c19ta.extractor.exception.ApiClientException;
+import co.adeshina.c19ta.extractor.http.TwitterFilteredStreamApiClient;
 import co.adeshina.c19ta.extractor.http.TwitterUserApiClient;
+import co.adeshina.c19ta.extractor.http.dto.TweetDto;
+import co.adeshina.c19ta.extractor.http.dto.UserDto;
 import co.adeshina.c19ta.extractor.kafka.KafkaProducerService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
-import okhttp3.OkHttpClient;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TweetExtractor {
 
-    private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+    private Logger logger = LoggerFactory.getLogger(TweetExtractor.class);
 
-    public static void main(String[] args) throws PropertiesInitFailedException, ApiClientException {
+    private TwitterFilteredStreamApiClient filteredStreamApiClient;
+    private TwitterUserApiClient userApiClient;
+    private KafkaProducerService<TweetData> kafkaProducerService;
 
-        PropertiesHelper propertiesHelper = new PropertiesHelper("application.properties");
-        Map<String, String> kafkaProps = propertiesHelper.kafkaProperties();
-        Map<String, String> twitterProps = propertiesHelper.twitterProperties();
-
-        Map<String, Object> kafkaConfig = new HashMap<>();
-        kafkaProps.put(ProducerConfig.ACKS_CONFIG, kafkaProps.get(PropertiesHelper.KAFKA_ACKS));
-        kafkaProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProps.get(PropertiesHelper.KAFKA_BOOTSTRAP_SERVERS));
-        kafkaProps.put(ProducerConfig.CLIENT_ID_CONFIG, kafkaProps.get(PropertiesHelper.KAFKA_EXTRACTOR_ID));
-
-        KafkaProducerService kafkaService = new KafkaProducerService(kafkaConfig, kafkaProps.get(PropertiesHelper.KAFKA_INPUT_TOPIC));
-        Runtime.getRuntime().addShutdownHook(new Thread(kafkaService::close));
-
-        String twitterConsumerSecret = twitterProps.get(PropertiesHelper.TWITTER_CONSUMER_SECRET);
-        String twitterConsumerKey = twitterProps.get(PropertiesHelper.TWITTER_CONSUMER_KEY);
-
-        TwitterBearerTokenApiClient bearerTokenApiClient =
-                new TwitterBearerTokenApiApiClientImpl(twitterConsumerKey, twitterConsumerSecret, HTTP_CLIENT);
-
-        TwitterFilteredStreamApiClient streamApiClient =
-                new TwitterFilteredStreamApiApiClientImpl(bearerTokenApiClient, HTTP_CLIENT);
-
-        TwitterUserApiClient userApiClient = new TwitterUserApiClientImpl(bearerTokenApiClient, HTTP_CLIENT);
-
-        streamApiClient.resetRules(STREAM_RULES);
-
-        streamApiClient.connect(tweetDto -> {
-
-            String authorId = tweetDto.getAuthorId();
-            List<String> terms = findTerms(tweetDto.getText());
-
-            try {
-                UserDto userDto = userApiClient.findUser(authorId);
-                TweetData data;
-                for (String term: terms) {
-                    data = new TweetData();
-                    data.setTerm(term);
-                    data.setVerifiedUser(userDto.isVerified());
-                    kafkaService.send(term, data);
-                }
-
-            } catch (ApiClientException e) {
-                // todo: logger - will skip this DTO
-            }
-        });
+    public TweetExtractor(
+            TwitterFilteredStreamApiClient filteredStreamApiClient,
+            TwitterUserApiClient userApiClient,
+            KafkaProducerService<TweetData> kafkaProducerService) {
+        this.filteredStreamApiClient = filteredStreamApiClient;
+        this.userApiClient = userApiClient;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
-    private static List<String> findTerms(String tweet) {
+    public void start() throws ApiClientException {
+        filteredStreamApiClient.resetRules(STREAM_RULES);
+        filteredStreamApiClient.connect(streamConsumer);
+    }
 
-        String[] terms = {"Chinese Virus", "SARS-CoV-2", "Wuhan Virus", "coronavirus"};
-        List<String> result = new ArrayList<>();
+    private Consumer<TweetDto> streamConsumer = (tweet) -> {
 
-        for (String term: terms) {
-            if (tweet.contains(term)) {
-                result.add(term);
-            }
+        try {
+            UserDto userDto = userApiClient.findUser(tweet.getAuthorId());
+
+            Function<String, TweetData> mapper = (term) -> {
+                TweetData data1 = new TweetData();
+                data1.setTerm(term);
+                data1.setVerifiedUser(userDto.isVerified());
+                return data1;
+            };
+
+            findTerms(tweet.getText()).stream()
+                                      .map(mapper)
+                                      .forEach(data -> kafkaProducerService.send(data.getTerm(), data));
+
+        } catch (ApiClientException e) {
+            String msg = "Could not retrieve data for user with id: " + tweet.getAuthorId();
+            logger.error(msg, e);
         }
+    };
 
-        return result;
+    // Checks the tweet for terms describing COVID-19.
+    private static List<String> findTerms(String tweet) {
+        String[] terms = {"Chinese Virus", "SARS-CoV-2", "Wuhan Virus", "coronavirus", "COVID-19"};
+        return Arrays.stream(terms).filter(tweet::contains).collect(Collectors.toList());
     }
 
     private static final String STREAM_RULES = "{\n"
             + "  \"add\": [\n"
             + "    {\"value\":  \"\\\"SARS-CoV-2\\\"\"},\n"
-            + "    {\"value\":  \"COVID19\"},\n"
+            + "    {\"value\":  \"COVID-19\"},\n"
             + "    {\"value\":  \"coronavirus\"},\n"
             + "    {\"value\":  \"\\\"Chinese Virus\\\"\"},\n"
             + "    {\"value\":  \"\\\"Wuhan Virus\\\"\"}\n"

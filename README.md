@@ -3,6 +3,7 @@
 # Overview
 
 # Architecture
+* NOTE: NO Database, the Kafka Broker is effectively the database.
 
 # Project Structure
     -- describe what each module does
