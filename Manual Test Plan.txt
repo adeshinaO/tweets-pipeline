@@ -1,6 +1,34 @@
 
 
-    1. All three executables must first be tested in isolation. Testing is as follows:
+TODO: Extract the frontend app from DATA API -- Be mindful of CORS issues.
+        USe Another spring app with less deps -- Since Thymeleaf is needed.
+
+    0. All three executables must first be tested in isolation. Before any testing:
         a. Ensure the profile in Maven settings.xml has all the correct properties set.
         b. Ensure that Kafka and Zookeeper are properly configured.
-        c. 
+        c. Start Kafka and Zookeeper.
+
+    1. `extractor` is tested as follows:
+        a. Ensure a strong internet connection is in use.
+        b. use `mvn -B package -p{profile}` to build the executable JAR.
+        c. Use the `java ...` command to start main() method of the JAR.
+        d.
+
+    2. `processor` is tested as follows:
+
+
+
+    3. `data-api` is tested as follows:
+
+
+
+
+    4. `user-interface` is tested as follows:
+
+
+
+
+    5. All components are tested together as follows:
+
+
+

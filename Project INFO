@@ -32,7 +32,7 @@
 		> Configure Kafka to ensure exactly-once delivery semantics.
 		> Build extractor and stream processor with `mvn -B package`
 
-		> Delete this file and Manual Test Plan.
+		> Polish `Manual Test Plan` and point to it from README
 
 	_______________________________________________ Architecture _____________________________________________________________________
 	
