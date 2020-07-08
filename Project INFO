@@ -22,7 +22,6 @@
     3. Rename project and repository to covid19-tweets-analytis, package to c19a
 	__________________________________________________________________________________________________________________
 
-        > Refactor API clients in `extractor` and test them using Square's MockWebServer
         > Also use Generics where possible.
 
 		> Write tests for the stream processing app using test utils module provide by Kafka.
@@ -32,9 +31,9 @@
 
 		> Configure Kafka to ensure exactly-once delivery semantics.
 		> Build extractor and stream processor with `mvn -B package`
-			
-		> At end of project implement Kafka security for streams processor, producer and consumer.
-	
+
+		> Delete this file and Manual Test Plan.
+
 	_______________________________________________ Architecture _____________________________________________________________________
 	
 	Three applications (1 web app, 2 executable JARs with main method) and one library:

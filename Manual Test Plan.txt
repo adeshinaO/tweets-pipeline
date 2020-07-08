@@ -1,0 +1,6 @@
+
+
+    1. All three executables must first be tested in isolation. Testing is as follows:
+        a. Ensure the profile in Maven settings.xml has all the correct properties set.
+        b. Ensure that Kafka and Zookeeper are properly configured.
+        c. 

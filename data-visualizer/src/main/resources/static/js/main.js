@@ -45,35 +45,29 @@ var barChartData = {
 
 var ctx = document.getElementById("chart").getContext("2d");
 
-chart = new Chart(ctx, {
+var chart = new Chart(ctx, {
   type: "bar",
   data: barChartData,
   options: chartOptions
 });
 
-const evtSource = new EventSource('/covid19-data');
+var evtSource = new EventSource('/covid19-data');
 
 evtSource.onerror = function() {
-  console.log("Error!"); // todo: better message
+  console.log("Error!");
 };
 
 evtSource.addEventListener("data-update", function(dataPacket) { 
 
   let data = dataPacketHelper(dataPacket);
 
-  // Pass the two built arrays into chart.data.**
+  chart.data.datasets[0].data = data.verified;
+  chart.data.datasets[1].data = data.unverified;
 
-  // Call chart.update()
-
+  chart.update();
 });
 
 var dataPacketHelper = function(dataPacket) {
-
-    // See: https://www.chartjs.org/docs/latest/developers/updates.html
-
-    // See: https://developer.mozilla.org/en-US/docs/Web/API/EventSource
-
-    // return an object holding two arrays.
 
     let verifiedUsersData = [];
     let unverifiedUsersData = [];
@@ -81,6 +75,7 @@ var dataPacketHelper = function(dataPacket) {
     let dataArray = dataPacket.data;
 
     for (const item of dataArray) {
+
         // Array position is determined by position of same terms in `barChartData.labels`
         switch (item.term) {
           case 'coronavirus':
