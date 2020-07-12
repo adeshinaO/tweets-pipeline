@@ -22,14 +22,14 @@ public class DataPacketController {
     private DataPacketService dataPacketService;
     private Logger logger = LoggerFactory.getLogger(DataPacketController.class);
 
-    private static final String SSE_EVENT_NAME = "data-update";
+    private static final String NEW_PACKET_EVENT = "new-packet";
 
     @Autowired
     public DataPacketController(DataPacketServiceImpl dataPacketService) {
         this.dataPacketService = dataPacketService;
     }
 
-    @GetMapping("/covid19-data")
+    @GetMapping("/data-stream")
     public SseEmitter eventSource() {
 
         SseEmitter sseEmitter = new SseEmitter();
@@ -44,7 +44,7 @@ public class DataPacketController {
                         DataPacket packet = dataPacketOptional.get();
                         String packetId = packet.getBuildTime().toString();
                         SseEmitter.SseEventBuilder builder = SseEmitter.event();
-                        builder.name(SSE_EVENT_NAME);
+                        builder.name(NEW_PACKET_EVENT);
                         builder.id(packetId);
                         builder.data(packet);
                         sseEmitter.send(builder);

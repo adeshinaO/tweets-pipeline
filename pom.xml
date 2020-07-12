@@ -4,14 +4,12 @@
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>co.adeshina.c19terma</groupId>
+    <groupId>co.adeshina.c19ta</groupId>
     <artifactId>c19ta-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <!-- Todo -->
-    <description>TODO</description>
-    <name>COVID-19 Tweets Analytics</name>
+    <name>COVID-19 Tweets Analytics Parent POM</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
