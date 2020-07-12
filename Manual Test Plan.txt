@@ -1,8 +1,4 @@
 
-
-TODO: Extract the frontend app from DATA API -- Be mindful of CORS issues.
-        USe Another spring app with less deps -- Since Thymeleaf is needed.
-
     0. All three executables must first be tested in isolation. Before any testing:
         a. Ensure the profile in Maven settings.xml has all the correct properties set.
         b. Ensure that Kafka and Zookeeper are properly configured.
@@ -11,24 +7,25 @@ TODO: Extract the frontend app from DATA API -- Be mindful of CORS issues.
     1. `extractor` is tested as follows:
         a. Ensure a strong internet connection is in use.
         b. use `mvn -B package -p{profile}` to build the executable JAR.
-        c. Use the `java ...` command to start main() method of the JAR.
-        d.
+        c. Use the `java ...` command to run the JAR.
+        d. Monitor the logs to see that it connects to Twitter successfully.
+        e. Use Kafka tool to inspect the output topic and see that records are written.
+        f. Check Twitter developer to confirm that data is pulled.
 
     2. `processor` is tested as follows:
-
-
+        a. use `mvn -B package -p{profile}` to build the executable JAR.
+        b. Check that `extractor` is writing data to the Kafka input topic.
+        c. use `java -jar ...` command to start the processor.
+        d. Check logs and inspect Kafka output topic to see that the processor is working.
 
     3. `data-api` is tested as follows:
-
-
-
+        a. Start the application using the Spring Boot mvn plugin.
+        b. Check logs to confirm that scheduled jobs are polling Kafka broker.
+        ci. First modify `DataController` so that the while-loop breaks after 2 iterations...
+        cii. ...Then use Insomnia to test the data controller endpoint.
 
     4. `user-interface` is tested as follows:
-
-
-
-
-    5. All components are tested together as follows:
-
-
-
+        a. Start data-api and all other components of the pipeline.
+        b. Start the ui app using Spring boot's Maven plugin and correct profile.
+        c. Check that the chart is initialized correctly.
+        d. Check that data stream events are being handled

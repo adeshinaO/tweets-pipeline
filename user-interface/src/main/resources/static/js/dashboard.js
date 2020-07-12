@@ -51,13 +51,14 @@ var chart = new Chart(ctx, {
   options: chartOptions
 });
 
-var evtSource = new EventSource('/covid19-data');
+var apiUrl = document.getElementById("api_url").value;
+var evtSource = new EventSource(apiUrl+ '/data-stream');
 
 evtSource.onerror = function() {
   console.log("Error!");
 };
 
-evtSource.addEventListener("data-update", function(dataPacket) { 
+evtSource.addEventListener("new-packet", function(dataPacket) { 
 
   let data = dataPacketHelper(dataPacket);
 
