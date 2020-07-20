@@ -46,6 +46,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
+          <configuration>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+              <mainClass>org.sonatype.haven.HavenCli</mainClass>
+            </transformer>
+            <mainClass>co.adeshina.c19ta.processor.StreamProcessor</mainClass>
+          </configuration>
         </plugin>
       </plugins>
 

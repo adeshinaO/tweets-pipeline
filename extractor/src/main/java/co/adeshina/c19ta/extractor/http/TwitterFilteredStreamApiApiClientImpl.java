@@ -103,14 +103,12 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
     public void connect(Consumer<TweetDto> tweetConsumer) throws ApiClientException {
 
         bearerToken = bearerTokenApiClient.token();
-
         Request request = new Request.Builder()
                 .url(STREAM_URL)
                 .header("Authorization", "Bearer " + bearerToken)
                 .build();
 
         try {
-
             Response response = execute(request);
             BufferedSource bufferedSource = response.body().source();
             boolean openConnection = true;

@@ -52,7 +52,7 @@ var chart = new Chart(ctx, {
 });
 
 var apiUrl = document.getElementById("api_url").value;
-var evtSource = new EventSource(apiUrl+ '/data-stream');
+var evtSource = new EventSource(apiUrl);
 
 evtSource.onerror = function() {
   console.log("Error!");
