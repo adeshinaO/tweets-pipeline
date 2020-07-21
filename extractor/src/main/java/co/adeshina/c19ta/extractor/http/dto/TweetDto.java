@@ -6,24 +6,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TweetDto {
 
-    private String text;
+    private Data data;
 
-    @JsonProperty("author_id")
-    private String authorId;
-
-    public String getText() {
-        return text;
+    public Data getData() {
+        return data;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setData(Data data) {
+        this.data = data;
     }
 
-    public String getAuthorId() {
-        return authorId;
-    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Data {
 
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+        private String text;
+
+        @JsonProperty("author_id")
+        private String authorId;
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public String getAuthorId() {
+            return authorId;
+        }
+
+        public void setAuthorId(String authorId) {
+            this.authorId = authorId;
+        }
     }
 }

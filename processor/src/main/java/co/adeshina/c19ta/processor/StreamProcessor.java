@@ -32,27 +32,27 @@ public class StreamProcessor {
         PropertiesHelper propertiesHelper = new PropertiesHelper("common.properties");
         Map<String, String> kafkaProps = propertiesHelper.kafkaProperties();
 
+        StreamsBuilder builder = new StreamsBuilder();
+        Consumed<String, TweetData> consumedWith = Consumed.with(Serdes.String(), StreamProcessorHelper.TWEET_DATA_SERDE);
+        String inputTopic = kafkaProps.get(PropertiesHelper.KAFKA_INPUT_TOPIC);
+
+        KStream<String, TweetData> source = builder.stream(inputTopic, consumedWith);
+        KGroupedStream<String, TweetData> groupedStream = source.groupByKey();
+
+        KTable<String, TweetAggregate> aggregateData =
+                groupedStream.aggregate(StreamProcessorHelper.INITIALIZER, StreamProcessorHelper.AGGREGATOR,
+                        Materialized.with(Serdes.String(), StreamProcessorHelper.TWEET_AGGREGATE_SERDE));
+
+        String outputTopic = kafkaProps.get(PropertiesHelper.KAFKA_OUTPUT_TOPIC);
+        aggregateData.toStream()
+                     .to(outputTopic, Produced.with(Serdes.String(), StreamProcessorHelper.TWEET_AGGREGATE_SERDE));
+
+        Topology topology = builder.build();
+
         Properties config = new Properties();
         config.put(StreamsConfig.APPLICATION_ID_CONFIG, kafkaProps.get(PropertiesHelper.KAFKA_PROCESSOR_ID));
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProps.get(PropertiesHelper.KAFKA_BOOTSTRAP_SERVERS));
 
-        StreamsBuilder builder = new StreamsBuilder();
-
-        Consumed<String, TweetData> consumed = Consumed.with(Serdes.String(), StreamProcessorUtil.TWEET_DATA_SERDE);
-        String inputTopic = kafkaProps.get(PropertiesHelper.KAFKA_INPUT_TOPIC);
-
-        KStream<String, TweetData> source = builder.stream(inputTopic, consumed);
-        KGroupedStream<String, TweetData> groupedStream = source.groupByKey();
-
-        KTable<String, TweetAggregate> aggregateData =
-                groupedStream.aggregate(StreamProcessorUtil.INITIALIZER, StreamProcessorUtil.AGGREGATOR,
-                        Materialized.with(Serdes.String(), StreamProcessorUtil.TWEET_AGGREGATE_SERDE));
-
-        String outputTopic = kafkaProps.get(PropertiesHelper.KAFKA_OUTPUT_TOPIC);
-        aggregateData.toStream()
-                     .to(outputTopic, Produced.with(Serdes.String(), StreamProcessorUtil.TWEET_AGGREGATE_SERDE));
-
-        Topology topology = builder.build();
         KafkaStreams streamProcessor = new KafkaStreams(topology, config);
 
         streamProcessor.setUncaughtExceptionHandler((thread, throwable) -> {

@@ -20,11 +20,11 @@ import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TwitterBearerTokenApiApiClientImpl implements TwitterBearerTokenApiClient {
+public class TwitterBearerTokenApiClientImpl implements TwitterBearerTokenApiClient {
 
     private Logger logger = LoggerFactory.getLogger(TwitterBearerTokenApiClient.class);
-    private final static String BEARER_TOKEN_URL = "https://api.twitter.com/oauth/token";
-    private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
+    private final static String BEARER_TOKEN_URL = "https://api.twitter.com/oauth2/token";
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/x-www-form-urlencoded; charset=utf-8");
     private final ObjectMapper mapper = new ObjectMapper();
 
     private final String consumerSecret;
@@ -33,7 +33,7 @@ public class TwitterBearerTokenApiApiClientImpl implements TwitterBearerTokenApi
 
     private String bearerToken;
 
-    public TwitterBearerTokenApiApiClientImpl(String consumerKey, String consumerSecret, OkHttpClient httpClient) {
+    public TwitterBearerTokenApiClientImpl(String consumerKey, String consumerSecret, OkHttpClient httpClient) {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.httpClient = httpClient;
@@ -41,11 +41,10 @@ public class TwitterBearerTokenApiApiClientImpl implements TwitterBearerTokenApi
 
     @Override
     public String token() throws ApiClientException {
-        return bearerToken == null ? refreshToken() : bearerToken;
+        return bearerToken == null ? getToken() : bearerToken;
     }
 
-    @Override
-    public String refreshToken() throws ApiClientException {
+    private String getToken() throws ApiClientException {
 
         String urlEncodedKey;
         String urlEncodedSecret;
@@ -77,7 +76,7 @@ public class TwitterBearerTokenApiApiClientImpl implements TwitterBearerTokenApi
 
             BearerTokenDto tokenDto = mapper.readValue(responseBody.string(), BearerTokenDto.class);
             bearerToken = tokenDto.getAccessToken();
-            logger.info("Obtained API bearer token: " + bearerToken.substring(0, bearerToken.length()/2) + "...");
+            logger.info("Successfully obtained obtained Twitter API bearer token:");
 
         } catch (Exception e) {
             throw new ApiClientException("Failed to obtain bearer token", e);

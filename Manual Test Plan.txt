@@ -2,33 +2,34 @@
     0. All three executables must first be tested in isolation. Before any testing:
         a. Ensure the profile in Maven settings.xml has all the correct properties set.
         b. Ensure that Kafka and Zookeeper are properly configured.
-        c. Start Kafka and Zookeeper.
+        c. Ensure needed Kafka topics exist, then start Kafka and Zookeeper.
         d. Trigger reactor build of entire project: `mvn clean install -p{profile-name}` (at root)
 
-    1. `extractor` is tested as follows:
+        NOTE: Always stop Kafka before stopping Zookeeper.
+
+    1. `extractor` is tested as follows:................................................DONE
         > First go to step 0. then:
         a. Ensure a strong internet connection is in use.
         b. Use the `java -jar path-to-JAR` command to run the JAR.
         c. Monitor the logs to see that it connects to Twitter successfully.
         d. Use Kafka tool to inspect the output topic and see that records are written.
-        e. Check Twitter developer to confirm that data is pulled.
 
-    2. `processor` is tested as follows:
+    2. `processor` is tested as follows:................................................DONE
         > First go to step 0. then:
-        a. Check that `extractor` is writing data to the Kafka input topic.
+        a. Check that `extractor` has written data to the Kafka input topic.
         b use `java -jar path-to-JAR` command to start the processor.
         c. Check logs and inspect Kafka output topic to see that the processor is working.
 
-    3. `data-api` is tested as follows:
+    3. `data-api` is tested as follows:.................................................DONE
         > First go to step 0. then:
-        a. Start the application using the Spring Boot mvn plugin.
-        b. Check logs to confirm that scheduled jobs are polling Kafka broker.
-        ci. First modify `DataController` so that the while-loop breaks after 5 iterations...
-        cii. Then use Insomnia to test the data controller endpoint.
+        a. Modify `DataController` so that the while-loop breaks after 5 iterations.
+        b. Start the application using the Spring Boot mvn plugin.
+        c. Check logs to confirm that scheduled jobs are polling Kafka broker.
+        d. Then use Insomnia to test the data controller endpoint.
 
     4. `user-interface` is tested as follows:
         > First go to step 0. then:
         a. Start data-api and all other components of the pipeline.
-        b. Start the ui app using Spring boot's Maven plugin and correct profile.
+        b. Start the UI app using Spring boot's Maven plugin and correct profile.
         c. Check that the chart is initialized correctly.
         d. Check that data stream events are being handled

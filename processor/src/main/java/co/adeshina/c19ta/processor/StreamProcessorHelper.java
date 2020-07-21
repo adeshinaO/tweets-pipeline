@@ -16,7 +16,7 @@ import org.apache.kafka.streams.kstream.Initializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StreamProcessorUtil {
+public class StreamProcessorHelper {
 
     private static Logger logger = LoggerFactory.getLogger(StreamProcessor.class);
 
@@ -49,7 +49,7 @@ public class StreamProcessorUtil {
             countMap.put(TweetAggregate.AccountType.UNVERIFIED, oldCount + 1);
         }
 
-        logger.info("Merged one tweet into the aggregate for: " + key);
+        logger.info("Merged one tweet data into aggregate for: " + key);
         aggregate.setCountByAccountType(countMap);
 
         if (aggregate.getTerm() == null) {

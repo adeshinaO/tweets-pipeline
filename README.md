@@ -3,9 +3,15 @@
 # Overview
 
 # Architecture
+
 * NOTE: NO Database, the Kafka Broker is effectively the database.
+* NOTE: Extractor won't be stable because the Filtered stream endpoint is in labs and changes..
 
 # Project Structure
-    -- describe what each module does
+
+    -- Describe what each module does.
+    -- Write a README for each module?
     
 # Tech Stack
+
+

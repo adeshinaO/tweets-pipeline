@@ -49,7 +49,7 @@ public class ErrorsDto {
 
         @Override
         public String toString() {
-            return String.format("Message: %s \nHTTP Code: %s\n Error Code: %d", message, httpStatusCode, errorCode);
+            return String.format("\nMessage: %s \nHTTP Code: %s\nError Code: %d", message, httpStatusCode, errorCode);
         }
     }
 }

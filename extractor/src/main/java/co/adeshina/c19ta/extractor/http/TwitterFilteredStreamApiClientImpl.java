@@ -1,14 +1,14 @@
 package co.adeshina.c19ta.extractor.http;
 
 import co.adeshina.c19ta.extractor.exception.ApiClientException;
-import co.adeshina.c19ta.extractor.http.dto.ErrorsDto;
+import co.adeshina.c19ta.extractor.http.dto.DeleteRulesDto;
+import co.adeshina.c19ta.extractor.http.dto.LabsErrors;
 import co.adeshina.c19ta.extractor.http.dto.RulesDto;
 import co.adeshina.c19ta.extractor.http.dto.TweetDto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -25,13 +25,13 @@ import okio.BufferedSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStreamApiClient {
+public class TwitterFilteredStreamApiClientImpl implements TwitterFilteredStreamApiClient {
 
-    private Logger logger = LoggerFactory.getLogger(TwitterFilteredStreamApiClient.class);
+    private final Logger logger = LoggerFactory.getLogger(TwitterFilteredStreamApiClient.class);
     private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
 
     private static final String RULES_URL = "https://api.twitter.com/labs/1/tweets/stream/filter/rules";
-    private static final String STREAM_URL = "https://api.twitter.com/labs/1/tweets/stream/filter";
+    private static final String STREAM_URL = "https://api.twitter.com/labs/1/tweets/stream/filter?tweet.format=detailed";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -40,7 +40,7 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
 
     private String bearerToken;
 
-    public TwitterFilteredStreamApiApiClientImpl(
+    public TwitterFilteredStreamApiClientImpl(
             TwitterBearerTokenApiClient bearerTokenApiClient,
             OkHttpClient httpClient) {
         this.bearerTokenApiClient = bearerTokenApiClient;
@@ -58,28 +58,31 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
                 .build();
 
         try {
-
             Response response = execute(request);
             RulesDto rulesDto = mapper.readValue(response.body().string(), RulesDto.class);
 
             // Delete any existing rules.
-            if (!rulesDto.getData().isEmpty()) {
+            if (rulesDto != null && rulesDto.getData() != null && !rulesDto.getData().isEmpty()) {
 
                 List<String> ids = new ArrayList<>();
                 for (RulesDto.Rule rule : rulesDto.getData()) {
                     ids.add(rule.getId());
                 }
 
-                RequestBody requestBody = RequestBody.create("{\n"
-                        + "  \"delete\": {\n"
-                        + "    \"ids\":" + ids.toString() + "\n"
-                        + "  }\n"
-                        + "}", JSON_MEDIA_TYPE);
+                DeleteRulesDto.Delete delete = new DeleteRulesDto.Delete();
+                delete.setIds(ids);
+
+                DeleteRulesDto deleteRulesDto = new DeleteRulesDto();
+                deleteRulesDto.setDelete(delete);
+
+                String json = mapper.writeValueAsString(deleteRulesDto);
+
+                RequestBody requestBody = RequestBody.create(json, JSON_MEDIA_TYPE);
 
                 request = new Request.Builder()
                         .url(RULES_URL)
                         .header("Authorization", "Bearer " + bearerToken)
-                        .delete(requestBody)
+                        .post(requestBody)
                         .build();
 
                 execute(request);
@@ -97,6 +100,8 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
         } catch (IOException e) {
             throw new ApiClientException("Failed to establish connection to API", e);
         }
+
+        logger.info("Streaming rules reset successful");
     }
 
     @Override
@@ -108,16 +113,31 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
                 .header("Authorization", "Bearer " + bearerToken)
                 .build();
 
+        // TODO: problem to fix now.......
+        //      1. Application is running out heap space: Solutions
+        //              - Work through code, make sure unneeded objects are not held in scope.
+        //              - Start the program using -Xmx which guarantees maximum heap space is used.
+
         try {
             Response response = execute(request);
             BufferedSource bufferedSource = response.body().source();
+
+            logger.info("Opened new streaming connection to Twitter Filtered Stream API v1");
+
             boolean openConnection = true;
+
+            TweetDto.Data data;
+            TweetDto dto;
+            String line;
+            String formatString = "New data [author_id: %s | text: %s]";
 
             while (openConnection) {
                 if (!bufferedSource.exhausted()) {
-                    String data = bufferedSource.readString(StandardCharsets.UTF_8);
-                    logger.info("New data from stream: " + data);
-                    tweetConsumer.accept(mapper.readValue(data, TweetDto.class));
+                    line = bufferedSource.readUtf8Line();
+                    dto = mapper.readValue(line, TweetDto.class);
+                    data = dto.getData();
+                    logger.info(String.format(formatString, data.getAuthorId(), data.getText()));
+                    tweetConsumer.accept(dto);
                 } else {
                     openConnection = false;
                 }
@@ -132,21 +152,11 @@ public class TwitterFilteredStreamApiApiClientImpl implements TwitterFilteredStr
         Response response = httpClient.newCall(request).execute();
         ResponseBody responseBody = response.body();
 
-        if (!response.isSuccessful() && Integer.toString(response.code()).equals("401")) {
-
-            logger.info("Bearer token has expired. Will attempt a token refresh");
-            bearerToken = bearerTokenApiClient.refreshToken();
-            response = httpClient.newCall(request).execute();
-
-            if(!response.isSuccessful()){
-                ErrorsDto errors = mapper.readValue(responseBody.string(), ErrorsDto.class);
-                throw new ApiClientException(errors.getErrors().get(0).toString());
+        if (!response.isSuccessful()) {
+            if (responseBody != null) {
+                LabsErrors errorsDto = mapper.readValue(responseBody.string(), LabsErrors.class);
+                throw new ApiClientException(errorsDto.getErrors().get(0).toString());
             }
-
-        } else if (!response.isSuccessful() && responseBody != null) {
-            ErrorsDto errors = mapper.readValue(responseBody.string(), ErrorsDto.class);
-            throw new ApiClientException(errors.getErrors().get(0).toString());
-        } else {
             throw new ApiClientException(response.toString());
         }
 

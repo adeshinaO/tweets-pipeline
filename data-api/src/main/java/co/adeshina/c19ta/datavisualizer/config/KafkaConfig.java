@@ -41,7 +41,7 @@ public class KafkaConfig {
     @Value("${session.timeout.ms}")
     private String sessionTimeoutMs;
 
-    @Value("${kafka.output.topic}")
+    @Value("${topic}")
     private String topic;
 
     private KafkaConsumer<String, TweetAggregate> kafkaConsumer;

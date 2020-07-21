@@ -111,3 +111,30 @@ var dataPacketHelper = function(dataPacket) {
       "unverified": unverifiedUsersData
     };
 };
+
+
+
+/// todo
+
+{
+  "data":[
+     {
+        "term":"coronavirus",
+        "verified_users_percentage":29.0,
+        "unverified_users_percentage":23.7
+     },
+     {
+        "term":"COVID-19",
+        "verified_users_percentage":21.0,
+        "unverified_users_percentage":28.1
+     },
+     {
+        "term":"SARS-CoV-2",
+        "verified_users_percentage":0.0,
+        "unverified_users_percentage":0.5
+     }
+  ],
+  "totalTweetsUnverifiedUsers":1045,
+  "totalTweetsVerifiedUsers":62,
+  "buildTime":"2020-07-29T22:20:54.881"
+}
