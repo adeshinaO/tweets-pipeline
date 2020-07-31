@@ -19,7 +19,7 @@ public class KafkaPollJob {
 
     private Logger logger = LoggerFactory.getLogger(KafkaPollJob.class);
     private List<TweetAggregate> buffer = new ArrayList<>();
-    private static final int MIN_BUFFER_SIZE = 5;
+    private static final int MIN_BUFFER_SIZE = 3;
 
     private DataPacketService dataPacketService;
     private KafkaConsumerService<TweetAggregate> kafkaConsumerService;
@@ -38,17 +38,16 @@ public class KafkaPollJob {
         this.dataPacketService = packetService;
     }
 
-    @Scheduled(fixedRate = 3500)
+    @Scheduled(fixedDelay = 3500)
     public void pollBroker() {
         logger.info("Starting to poll kafka broker...");
         List<TweetAggregate> data = kafkaConsumerService.poll();
-        buffer.addAll(data);
         logger.info("Adding {} data items into buffer", data.size());
+        buffer.addAll(data);
+        flushBuffer();
     }
 
-    @Scheduled(fixedRate = 35000)
-    public void flushBuffer() {
-        logger.info("Checking buffer size");
+    private void flushBuffer() {
         if (buffer.size() > MIN_BUFFER_SIZE) {
             dataPacketService.buildPacket(buffer);
             kafkaConsumerService.commitOffsets();

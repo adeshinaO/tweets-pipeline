@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class UserInterfaceController {
 
     @Value("${data.api.url}")
-    private String dataApiUrl;
+    private String dataApiBaseUrl;
 
     @GetMapping("/dashboard")
     public String home(Model model) {
-        model.addAttribute("data-api-url", dataApiUrl);
+        model.addAttribute("dataApiUrl", dataApiBaseUrl.concat("/data-stream"));
         return "dashboard";
     }
-
 }

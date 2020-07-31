@@ -5,6 +5,9 @@ import co.adeshina.c19ta.datavisualizer.dto.DataPacket;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class DataPacketServiceImpl implements DataPacketService {
 
     private Set<DataPacket> packetContainer = new HashSet<>(1);
@@ -47,9 +53,10 @@ public class DataPacketServiceImpl implements DataPacketService {
         }
 
         DataPacket dataPacket = new DataPacket();
-        dataPacket.setData(new HashSet<>(dataMap.values()));
+        dataPacket.setData(new ArrayList<>(dataMap.values()));
         dataPacket.setTotalTweetsUnverifiedUsers(totalTweetsUnverifiedUsers);
         dataPacket.setTotalTweetsVerifiedUsers(totalTweetsVerifiedUsers);
+        dataPacket.setBuildTime(ZonedDateTime.now(ZoneId.of("Africa/Lagos")));
 
         packetContainer.add(dataPacket);
     }
@@ -67,6 +74,7 @@ public class DataPacketServiceImpl implements DataPacketService {
         return optional;
     }
 
+    // Calculates the percentage of 'value' in 'total'
     private double percentageOfTotal(double total, double value) {
         BigDecimal bd = BigDecimal.valueOf((value / total) * 100);
         return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();

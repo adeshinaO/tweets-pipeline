@@ -11,12 +11,15 @@ import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
+@CrossOrigin
 public class DataPacketController {
 
     private DataPacketService dataPacketService;
@@ -33,7 +36,6 @@ public class DataPacketController {
     public SseEmitter eventSource() {
 
         SseEmitter sseEmitter = new SseEmitter();
-
         ExecutorService sseExecutor = Executors.newSingleThreadExecutor();
         sseExecutor.execute(() -> {
 
@@ -48,9 +50,12 @@ public class DataPacketController {
                         builder.id(packetId);
                         builder.data(packet);
                         sseEmitter.send(builder);
-                        logger.info("Sent a new packet with id: " + packetId);
+                        logger.info("Sent a new packet built at: " + packetId);
+                    } else {
+                        logger.info("No data to add to event stream");
                     }
-                    Thread.sleep(35000);
+
+                    Thread.sleep(5000);
                 } catch (IOException | InterruptedException e) {
                     sseEmitter.completeWithError(e);
                 }

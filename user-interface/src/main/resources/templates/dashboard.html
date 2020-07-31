@@ -10,11 +10,13 @@
 
 <body>
     
-    <input type="hidden" id="api_url" th:value="${data-api-url}">
+    <input type="hidden" id="api_url" th:value="${dataApiUrl}">
 
     <div id="container">
         <canvas id="chart"></canvas>
     </div>
+
+    <!-- todo: Display total number of tweets here -->
 
     <script th:src="@{/js/dashboard.js}"></script>
 </body>

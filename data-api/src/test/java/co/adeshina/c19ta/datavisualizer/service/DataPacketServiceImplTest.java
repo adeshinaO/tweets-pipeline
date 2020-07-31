@@ -36,14 +36,15 @@ public class DataPacketServiceImplTest {
         double percentageTweetsByVerifiedUsers = coronavirusData.getPercentageTweetsByVerifiedUsers();
         double percentageTweetsByUnverifiedUsers = coronavirusData.getPercentageTweetsByUnverifiedUsers();
 
-        assertEquals(57.9, percentageTweetsByUnverifiedUsers);
-        assertEquals(42.9, percentageTweetsByVerifiedUsers);
+        assertEquals(44.0, percentageTweetsByUnverifiedUsers);
+        assertEquals(34.6, percentageTweetsByVerifiedUsers);
     }
 
     private List<TweetAggregate> dataHelper() {
         List<TweetAggregate> result = new ArrayList<>();
         result.add(construct("COVID-19", 12, 8));
         result.add(construct("Coronavirus", 9, 11));
+        result.add(construct("Chinese Virus", 5, 6));
         return result;
     }
 

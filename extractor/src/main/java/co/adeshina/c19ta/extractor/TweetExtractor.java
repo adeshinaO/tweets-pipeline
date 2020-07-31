@@ -42,22 +42,24 @@ public class TweetExtractor {
     private Consumer<TweetDto> streamConsumer = (tweet) -> {
 
         try {
-            UserDto userDto = userApiClient.findUser(tweet.getAuthorId());
+            UserDto userDto = userApiClient.findUser(tweet.getData().getAuthorId());
 
             Function<String, TweetData> mapper = (term) -> {
-                TweetData data1 = new TweetData();
-                data1.setTerm(term);
-                data1.setVerifiedUser(userDto.isVerified());
-                return data1;
+                TweetData tweetData = new TweetData();
+                tweetData.setTerm(term);
+                tweetData.setVerifiedUser(userDto.isVerified());
+                return tweetData;
             };
 
-            findTerms(tweet.getText()).stream()
-                                      .map(mapper)
-                                      .forEach(data -> kafkaProducerService.send(data.getTerm(), data));
+            List<String> termsInTweet = findTerms(tweet.getData().getText());
+            termsInTweet.stream()
+                        .map(mapper)
+                        .forEach(data -> kafkaProducerService.send(data.getTerm(), data));
 
-            logger.info("Consumed one new tweet and sent tweet data to Kafka");
+            logger.info("Sent data from one tweet to Kafka Producer Service");
+
         } catch (ApiClientException e) {
-            String msg = "Could not retrieve data for user with id: " + tweet.getAuthorId();
+            String msg = "Could not retrieve data for user with id: " + tweet.getData().getAuthorId();
             logger.error(msg, e);
         }
     };

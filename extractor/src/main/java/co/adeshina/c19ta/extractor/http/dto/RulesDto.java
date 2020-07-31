@@ -1,6 +1,7 @@
 package co.adeshina.c19ta.extractor.http.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -38,5 +39,4 @@ public class RulesDto {
             this.id = id;
         }
     }
-
 }

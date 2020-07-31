@@ -35,17 +35,10 @@ public class KafkaPollJobTest {
     }
 
     @Test
-    public void shouldPollKafkaForSampleData() {
+    public void shouldFlushBufferAndPollKafkaForSampleData() {
         KafkaPollJob pollJob = new KafkaPollJob(buffer, mockConsumerService, mockPacketService);
         pollJob.pollBroker();
         assertEquals(SAMPLE_DATA_SIZE, buffer.size());
-    }
-
-    @Test
-    public void shouldFlushBuffer() {
-        KafkaPollJob pollJob = new KafkaPollJob(buffer, mockConsumerService, mockPacketService);
-        pollJob.pollBroker();
-        pollJob.flushBuffer();
         verify(mockConsumerService).commitOffsets();
         verify(mockPacketService).buildPacket(any());
     }

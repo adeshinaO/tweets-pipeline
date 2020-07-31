@@ -52,15 +52,16 @@ var chart = new Chart(ctx, {
 });
 
 var apiUrl = document.getElementById("api_url").value;
-var evtSource = new EventSource(apiUrl+ '/data-stream');
+
+var evtSource = new EventSource(apiUrl);
 
 evtSource.onerror = function() {
-  console.log("Error!");
+  console.error("Failed to connect to " + apiUrl);
 };
 
 evtSource.addEventListener("new-packet", function(dataPacket) { 
 
-  let data = dataPacketHelper(dataPacket);
+  let data = dataPacketHelper(JSON.parse(dataPacket.data));
 
   chart.data.datasets[0].data = data.verified;
   chart.data.datasets[1].data = data.unverified;
@@ -75,7 +76,11 @@ var dataPacketHelper = function(dataPacket) {
 
     let dataArray = dataPacket.data;
 
-    for (const item of dataArray) {
+    console.log("The array: " + dataArray);
+
+    for (let item of dataArray) {
+
+      console.log("This sis the item: "+ item); // todo: remove
 
         // Array position is determined by position of same terms in `barChartData.labels`
         switch (item.term) {
