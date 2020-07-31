@@ -4,22 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DataPacket {
 
-    private Set<Data> data = new HashSet<>();
+    private List<Data> data = new ArrayList<>();
     private int totalTweetsUnverifiedUsers;
     private int totalTweetsVerifiedUsers;
     private ZonedDateTime buildTime;
 
-    public Set<Data> getData() {
-        return new HashSet<>(data);
+    public List<Data> getData() {
+        return new ArrayList<>(data);
     }
 
-    public void setData(Set<Data> data) {
+    public void setData(List<Data> data) {
         this.data.addAll(data);
     }
 

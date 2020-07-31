@@ -13,7 +13,7 @@ public class UserInterfaceController {
 
     @GetMapping("/dashboard")
     public String home(Model model) {
-        model.addAttribute("data-api-url", dataApiBaseUrl.concat("/data-stream"));
+        model.addAttribute("dataApiUrl", dataApiBaseUrl.concat("/data-stream"));
         return "dashboard";
     }
 }

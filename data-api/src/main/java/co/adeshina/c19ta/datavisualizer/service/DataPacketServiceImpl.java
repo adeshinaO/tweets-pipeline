@@ -5,9 +5,9 @@ import co.adeshina.c19ta.datavisualizer.dto.DataPacket;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +53,7 @@ public class DataPacketServiceImpl implements DataPacketService {
         }
 
         DataPacket dataPacket = new DataPacket();
-        dataPacket.setData(new HashSet<>(dataMap.values()));
+        dataPacket.setData(new ArrayList<>(dataMap.values()));
         dataPacket.setTotalTweetsUnverifiedUsers(totalTweetsUnverifiedUsers);
         dataPacket.setTotalTweetsVerifiedUsers(totalTweetsVerifiedUsers);
         dataPacket.setBuildTime(ZonedDateTime.now(ZoneId.of("Africa/Lagos")));
