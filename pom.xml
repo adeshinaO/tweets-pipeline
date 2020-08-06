@@ -91,7 +91,7 @@
         <module>extractor</module>
         <module>processor</module>
         <module>data-api</module>
-        <module>user-interface</module>
+        <module>dashboard</module>
     </modules>
 
 </project>

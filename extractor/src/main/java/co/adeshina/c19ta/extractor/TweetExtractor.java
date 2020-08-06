@@ -39,10 +39,13 @@ public class TweetExtractor {
         filteredStreamApiClient.connect(streamConsumer);
     }
 
+    private int userApiRequestsCounter = 0;
+
     private Consumer<TweetDto> streamConsumer = (tweet) -> {
 
         try {
             UserDto userDto = userApiClient.findUser(tweet.getData().getAuthorId());
+            userApiRequestsCounter++;
 
             Function<String, TweetData> mapper = (term) -> {
                 TweetData tweetData = new TweetData();
@@ -58,9 +61,18 @@ public class TweetExtractor {
 
             logger.info("Sent data from one tweet to Kafka Producer Service");
 
+            // Sleep to stay within Twitter API limits.
+            if (userApiRequestsCounter == 20){
+                logger.info("Thread will sleep for 15 seconds");
+                userApiRequestsCounter = 0;
+                Thread.sleep(15000);
+            }
+
         } catch (ApiClientException e) {
             String msg = "Could not retrieve data for user with id: " + tweet.getData().getAuthorId();
             logger.error(msg, e);
+        } catch (InterruptedException e) {
+            logger.error("Sleep interrupted", e);
         }
     };
 

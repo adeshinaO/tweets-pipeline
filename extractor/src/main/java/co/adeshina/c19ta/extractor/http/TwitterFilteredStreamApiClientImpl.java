@@ -113,11 +113,6 @@ public class TwitterFilteredStreamApiClientImpl implements TwitterFilteredStream
                 .header("Authorization", "Bearer " + bearerToken)
                 .build();
 
-        // TODO: problem to fix now.......
-        //      1. Application is running out heap space: Solutions
-        //              - Work through code, make sure unneeded objects are not held in scope.
-        //              - Start the program using -Xmx which guarantees maximum heap space is used.
-
         try {
             Response response = execute(request);
             BufferedSource bufferedSource = response.body().source();

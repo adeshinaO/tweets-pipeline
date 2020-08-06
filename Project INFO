@@ -6,33 +6,13 @@
 	__________________________________________________________ Tech __________________________________________________________________
 	
 			- Kafka
-			- Spring (Boot, Data Mongo)
-			- Maven (Uselogger for Java Kafka Streams archetype as shown in the docs tutorial to generate stream processor)
-			- Docker
-			- Github Actions
+			- Spring Boot
+			- Maven
+			- Twitter API
 			- JUnit 5
+			- Mockito 2
 			- Thymeleaf
 			- ChartJS
-	
-	________________________________________________________ Actions _________________________________________________________________
-
-    0. Obtain twitter app credentials.
-    1. Test the whole System manually.
-    2. Beautify the UI; Make screencast; Write a README.
-    3. Rename project and repository to covid19-tweets-analytis, package to c19a
-	__________________________________________________________________________________________________________________
-
-        > Also use Generics where possible.
-
-		> Write tests for the stream processing app using test utils module provide by Kafka.
-
-		> See other data eng projects for inspiration on writing a good README.
-		> Draw architecture, describe Topology for processing.
-
-		> Configure Kafka to ensure exactly-once delivery semantics.
-		> Build extractor and stream processor with `mvn -B package`
-
-		> Polish `Manual Test Plan` and point to it from README
 
 	_______________________________________________ Architecture _____________________________________________________________________
 	
