@@ -1,4 +1,4 @@
-![](https://github.com/abdulwahabO/covid19-terms-analytics/workflows/build-test/badge.svg)
+![build](https://github.com/abdulwahabO/tweets-pipeline/workflows/build/badge.svg)
 
 # Overview
 
