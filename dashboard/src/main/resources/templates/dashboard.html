@@ -1,0 +1,24 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <script th:src="@{https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js}"></script>
+</head>
+
+<body>
+    <input type="hidden" id="api_url" th:value="${dataApiUrl}">
+    <div id="container">
+        <canvas id="chart"></canvas>
+    </div>
+
+    <br>
+    <p>Total number of tweets by users with > 1k followers: <span id="1k_total">0</span></p>
+    <p>Total number of tweets by users with < 1k followers: <span id="less_1k_total">0</spa></p>
+    <p>Last update: <span id="last_update">Never</span></p>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

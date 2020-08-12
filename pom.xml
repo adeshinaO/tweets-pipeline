@@ -9,7 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>COVID-19 Tweets Analytics Parent POM</name>
+    <name>Tweets Analytics Parent POM</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -91,7 +91,7 @@
         <module>extractor</module>
         <module>processor</module>
         <module>data-api</module>
-        <module>user-interface</module>
+        <module>dashboard</module>
     </modules>
 
 </project>

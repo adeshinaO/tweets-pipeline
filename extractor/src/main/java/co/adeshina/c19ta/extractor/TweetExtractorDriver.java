@@ -16,6 +16,7 @@ import co.adeshina.c19ta.extractor.kafka.KafkaProducerServiceImpl;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -25,7 +26,10 @@ import org.slf4j.LoggerFactory;
 
 public class TweetExtractorDriver {
 
-    private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+    private static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build();
 
     private static Logger logger = LoggerFactory.getLogger(TweetExtractorDriver.class);
 
@@ -48,6 +52,7 @@ public class TweetExtractorDriver {
 
         String twitterConsumerSecret = twitterProps.get(PropertiesHelper.TWITTER_CONSUMER_SECRET);
         String twitterConsumerKey = twitterProps.get(PropertiesHelper.TWITTER_CONSUMER_KEY);
+
 
         TwitterBearerTokenApiClient bearerTokenApiClient =
                 new TwitterBearerTokenApiClientImpl(twitterConsumerKey, twitterConsumerSecret, HTTP_CLIENT);

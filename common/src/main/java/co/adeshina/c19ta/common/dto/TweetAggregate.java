@@ -21,7 +21,7 @@ public class TweetAggregate {
     }
 
     public Map<AccountType, Integer> getCountByAccountType() {
-        return new HashMap<>(countByAccountType);
+        return countByAccountType;
     }
 
     public void setCountByAccountType(Map<AccountType, Integer> countByAccountType) {
@@ -30,10 +30,10 @@ public class TweetAggregate {
 
     public enum AccountType {
 
-        @JsonProperty("verified_accounts")
-        VERIFIED,
+        @JsonProperty("one_thousand_followers")
+        ONE_THOUSAND_FOLLOWERS,
 
-        @JsonProperty("unverified_accounts")
-        UNVERIFIED
+        @JsonProperty("less_than_one_thousand_followers")
+        LESS_THAN_ONE_THOUSAND_FOLLOWERS
     }
 }
