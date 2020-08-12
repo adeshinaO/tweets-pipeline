@@ -18,21 +18,21 @@ public class SerdeTest {
         TweetData tweet = tweetJsonDeserializer.deserialize(null, tweetDataJson.getBytes());
 
         assertEquals("COVID19", aggregate.getTerm());
-        assertEquals(5, aggregate.getCountByAccountType().get(TweetAggregate.AccountType.VERIFIED));
-        assertTrue(tweet.isVerifiedUser());
+        assertEquals(5, aggregate.getCountByAccountType().get(TweetAggregate.AccountType.ONE_THOUSAND_FOLLOWERS));
+        assertTrue(tweet.isUserHasOneThousandFollowers());
         assertEquals("COVID19", tweet.getTerm());
     }
 
     String tweetAggregateJson = "{\n"
             + "  \"term\": \"COVID19\",\n"
             + "  \"acct_type_count\": {\n"
-            + "    \"verified_accounts\": 5,\n"
-            + "    \"unverified_accounts\": 6\n"
+            + "    \"one_thousand_followers\": 5,\n"
+            + "    \"less_than_one_thousand_followers\": 6\n"
             + "  }\n"
             + "}";
 
     String tweetDataJson = "{\n"
             + "  \"term\": \"COVID19\",\n"
-            + "  \"is_verified_user\": \"true\"\n"
+            + "  \"has_one_thousand_followers\": \"true\"\n"
             + "}";
 }

@@ -36,8 +36,12 @@ public class DataPacketServiceImpl implements DataPacketService {
         }
 
         Map<String, DataPacket.Data> dataMap = new HashMap<>();
-        int totalTweetsVerifiedUsers = 0;
-        int totalTweetsUnverifiedUsers = 0;
+
+        // Total tweets from accounts with at least 1k followers
+        int thousandFollowersTotal = 0;
+
+        // Total from accts with < 1k followers
+        int lessThanThousandFollowersTotal = 0;
 
         for (TweetAggregate tweetAggregate: tweets) {
 
@@ -47,25 +51,25 @@ public class DataPacketServiceImpl implements DataPacketService {
             dataMap.put(term, data);
 
             Map<TweetAggregate.AccountType, Integer> tweetCountMap = tweetAggregate.getCountByAccountType();
-            totalTweetsVerifiedUsers += tweetCountMap.get(TweetAggregate.AccountType.VERIFIED);
-            totalTweetsUnverifiedUsers += tweetCountMap.get(TweetAggregate.AccountType.UNVERIFIED);
+            thousandFollowersTotal += tweetCountMap.get(TweetAggregate.AccountType.ONE_THOUSAND_FOLLOWERS);
+            lessThanThousandFollowersTotal += tweetCountMap.get(TweetAggregate.AccountType.LESS_THAN_ONE_THOUSAND_FOLLOWERS);
         }
 
         for (TweetAggregate tweetAggregate: tweets) {
 
             Map<TweetAggregate.AccountType, Integer> countMap = tweetAggregate.getCountByAccountType();
-            int tweetsVerified = countMap.get(TweetAggregate.AccountType.VERIFIED);
-            int tweetsUnverified = countMap.get(TweetAggregate.AccountType.UNVERIFIED);
+            int thousandFollowers = countMap.get(TweetAggregate.AccountType.ONE_THOUSAND_FOLLOWERS);
+            int lessThanThousandFollowers = countMap.get(TweetAggregate.AccountType.LESS_THAN_ONE_THOUSAND_FOLLOWERS);
 
             DataPacket.Data data = dataMap.get(tweetAggregate.getTerm());
-            data.setPercentageTweetsByVerifiedUsers(percentageOfTotal(totalTweetsVerifiedUsers, tweetsVerified));
-            data.setPercentageTweetsByUnverifiedUsers(percentageOfTotal(totalTweetsUnverifiedUsers, tweetsUnverified));
+            data.setPercentageThousandFollowers(percentageOfTotal(thousandFollowersTotal, thousandFollowers));
+            data.setPercentageLessThanThousandFollowers(percentageOfTotal(lessThanThousandFollowersTotal, lessThanThousandFollowers));
         }
 
         DataPacket dataPacket = new DataPacket();
         dataPacket.setData(new ArrayList<>(dataMap.values()));
-        dataPacket.setTotalTweetsUnverifiedUsers(totalTweetsUnverifiedUsers);
-        dataPacket.setTotalTweetsVerifiedUsers(totalTweetsVerifiedUsers);
+        dataPacket.setTotalLessThanThousandFollowers(lessThanThousandFollowersTotal);
+        dataPacket.setTotalThousandFollowers(thousandFollowersTotal);
         dataPacket.setBuildTime(ZonedDateTime.now(ZoneId.of("Africa/Lagos")));
         kafkaConsumerService.commitOffsets();
         return Optional.of(dataPacket);
@@ -73,7 +77,13 @@ public class DataPacketServiceImpl implements DataPacketService {
 
     // Calculates the percentage of 'value' in 'total'
     private double percentageOfTotal(double total, double value) {
-        BigDecimal bd = BigDecimal.valueOf((value / total) * 100);
+
+        if (total == 0.0 || value == 0.0){
+            return 0.0;
+        }
+
+        double percentage = (value / total) * 100;
+        BigDecimal bd = new BigDecimal(percentage);
         return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
     }
 }

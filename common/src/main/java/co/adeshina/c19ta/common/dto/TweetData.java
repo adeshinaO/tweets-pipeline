@@ -6,8 +6,8 @@ public class TweetData {
 
     private String term;
 
-    @JsonProperty("is_verified_user")
-    private boolean verifiedUser;
+    @JsonProperty("has_one_thousand_followers")
+    private boolean userHasOneThousandFollowers;
 
     public String getTerm() {
         return term;
@@ -17,11 +17,11 @@ public class TweetData {
         this.term = term;
     }
 
-    public boolean isVerifiedUser() {
-        return verifiedUser;
+    public boolean isUserHasOneThousandFollowers() {
+        return userHasOneThousandFollowers;
     }
 
-    public void setVerifiedUser(boolean verifiedUser) {
-        this.verifiedUser = verifiedUser;
+    public void setUserHasOneThousandFollowers(boolean userHasOneThousandFollowers) {
+        this.userHasOneThousandFollowers = userHasOneThousandFollowers;
     }
 }

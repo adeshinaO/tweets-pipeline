@@ -2,10 +2,13 @@
 
 # Overview
 
--- GIF of dashboard is here followed by description
+This project implements a basic stream processing pipeline. The pipeline feeds a dashboard that groups tweets into two
+categories: Those from users with at least a thousand followers and those from users with less than a thousand
+followers. A bar chart shows the percentage of tweets from each group that contain the name of one the given cities.
+The bar chart is updated in real-time as more data is available.
 
-Summarize the functional requirements...
-Describe what the graph is showing....
+![](dashboard.png)
+
 
 # Project Layout
 
@@ -23,16 +26,15 @@ This is a multi-module Maven project that consists of five(5) module:
 
 * [Extractor](extractor/README.md) uses Twitter's 
 [Filtered Stream API](https://developer.twitter.com/en/docs/labs/filtered-stream/overview)
-to consume a stream of tweets that contain any of the following strings used to reference the global pandemic of 2020: 
-"Coronavirus", "Wuhan Virus", "Chinese Virus", "COVID-19", "SARS-CoV-2". For each non-repeating occurrence of one the
-target strings in a tweet, `extractor` sends a `tweet_data` object to a Kafka 'input topic' using the string as the 
-record's key.
+to consume a stream of tweets that contain any of the following city names: "Paris", "Amsterdam", "Berlin", "London", 
+"New York". For each non-repeating occurrence of one the cities in a tweet, `extractor` sends a `tweet_data` 
+object to a Kafka 'input topic' using the string as the record's key.
 
 * [Processor](processor/README.md) is a Kafka Streams application that streams records from the input topic and
  merges them into stateful `tweet_aggregate` objects based on their keys. `tweet_aggregate`s are then written to the
  output topic.
  
-![](tweet_transform.png)
+![](tweet_transform_2.png)
 
 * [Data API](data-api/README.md) is a Spring Boot web application. It polls the output topic and builds data
 packages which are sent to [Dashboard](dashboard/README.md) in a stream of server-sent events. `Dashboard` is a Spring

@@ -5,7 +5,7 @@ var chartOptions = {
   },
   title: {
     display: true,
-    text: "COVID-19 Tweet Data"
+    text: "Cities Tweet Data"
   },
   scales: {
     yAxes: [{
@@ -23,23 +23,23 @@ var chartOptions = {
 
 var barChartData = {
   labels: [
-    "SARS-CoV-2",
-    "Wuhan Virus",
-    "Chinese Virus",
-    "Coronavirus",
-    "COVID-19"
+    "Amsterdam",
+    "Paris",
+    "New York",
+    "Berlin",
+    "London"
   ],
 
   datasets: [
     {
-      label: "Verified Users",
+      label: "Users with >= 1k followers",
       backgroundColor: " #166a9c",
       borderColor: "red",
       borderWidth: 0,
       data: [0, 0, 0, 0, 0]
     },
     {
-      label: "Unverified Users",
+      label: "Users with < 1k followers",
       backgroundColor: "#912e49",
       borderColor: "blue",
       borderWidth: 0,
@@ -71,11 +71,11 @@ evtSource.addEventListener("new-packet", function(event) {
   let dataPacketJson = event.data;
   let dataPacket = dataPacketHelper(JSON.parse(dataPacketJson));
 
-  chart.data.datasets[0].data = dataPacket.verified_dataset;
-  chart.data.datasets[1].data = dataPacket.unverified_dataset;
+  chart.data.datasets[0].data = dataPacket.one_thousand_followers_dataset;
+  chart.data.datasets[1].data = dataPacket.less_thousand_dataset;
 
-  document.getElementById("verified_total").innerHTML = dataPacket.verified_total;
-  document.getElementById("unverified_total").innerHTML = dataPacket.unverified_total;
+  document.getElementById("1k_total").innerHTML = dataPacket.thousand_followers_total;
+  document.getElementById("less_1k_total").innerHTML = dataPacket.less_than_thousand_followers_total;
   document.getElementById("last_update").innerHTML = dataPacket.build_time;
 
   chart.update();
@@ -88,8 +88,8 @@ window.addEventListener("unload", function(event) {
 
 var dataPacketHelper = function(dataPacket) {
 
-    let verifiedUsersData = [];
-    let unverifiedUsersData = [];
+    let thousandFollowersUsers = [];
+    let lessThanThousandFollowersUsers = [];
 
     let dataArray = dataPacket.data;
 
@@ -97,38 +97,38 @@ var dataPacketHelper = function(dataPacket) {
 
         // Array position is determined by position of same terms in `barChartData.labels`
         switch (item.term) {
-          case 'coronavirus':
-            verifiedUsersData[3] = item.verified_users_percentage;
-            unverifiedUsersData[3] = item.unverified_users_percentage;
+          case 'Berlin':
+            thousandFollowersUsers[3] = item.thousand_followers_percentage;
+            lessThanThousandFollowersUsers[3] = item.less_than_thousand_followers_percentage;
+            break;
+            
+          case 'London':
+            thousandFollowersUsers[4] = item.thousand_followers_percentage;
+            lessThanThousandFollowersUsers[4] = item.less_than_thousand_followers_percentage;
             break;
 
-          case 'COVID-19':
-            verifiedUsersData[4] = item.verified_users_percentage;
-            unverifiedUsersData[4] = item.unverified_users_percentage;
+          case 'Amsterdam':
+            thousandFollowersUsers[0] = item.thousand_followers_percentage;
+            lessThanThousandFollowersUsers[0] = item.less_than_thousand_followers_percentage;
             break;
 
-          case 'SARS-CoV-2':
-            verifiedUsersData[0] = item.verified_users_percentage;
-            unverifiedUsersData[0] = item.unverified_users_percentage;
+          case 'New York':
+            thousandFollowersUsers[2] = item.thousand_followers_percentage;
+            lessThanThousandFollowersUsers[2] = item.less_than_thousand_followers_percentage;
             break;
 
-          case 'Chinese Virus':
-            verifiedUsersData[2] = item.verified_users_percentage;
-            unverifiedUsersData[2] = item.unverified_users_percentage;
-            break;
-
-          case 'Wuhan Virus':
-            verifiedUsersData[1] = item.verified_users_percentage;
-            unverifiedUsersData[1] = item.unverified_users_percentage;
+          case 'Paris':
+            thousandFollowersUsers[1] = item.thousand_followers_percentage;
+            lessThanThousandFollowersUsers[1] = item.less_than_thousand_followers_percentage;
             break;
         }
     }
 
     return {
-      "verified_dataset": verifiedUsersData,
-      "unverified_dataset": unverifiedUsersData,
-      "verified_total": dataPacket.verified_total,
-      "unverified_total": dataPacket.unverified_total,
+      "one_thousand_followers_dataset": thousandFollowersUsers,
+      "less_thousand_dataset": lessThanThousandFollowersUsers,
+      "thousand_followers_total": dataPacket.thousand_followers_total,
+      "less_than_thousand_followers_total": dataPacket.less_than_thousand_followers_total,
       "build_time": dataPacket.build_time
     };
 };

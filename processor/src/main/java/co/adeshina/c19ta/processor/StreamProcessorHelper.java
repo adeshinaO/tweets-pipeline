@@ -28,8 +28,8 @@ public class StreamProcessorHelper {
 
     protected static final Initializer<TweetAggregate> INITIALIZER = () -> {
         Map<TweetAggregate.AccountType, Integer> count = new HashMap<>();
-        count.put(TweetAggregate.AccountType.VERIFIED, 0);
-        count.put(TweetAggregate.AccountType.UNVERIFIED, 0);
+        count.put(TweetAggregate.AccountType.ONE_THOUSAND_FOLLOWERS, 0);
+        count.put(TweetAggregate.AccountType.LESS_THAN_ONE_THOUSAND_FOLLOWERS, 0);
 
         TweetAggregate aggregate = new TweetAggregate();
         aggregate.setCountByAccountType(count);
@@ -41,12 +41,12 @@ public class StreamProcessorHelper {
 
         Map<TweetAggregate.AccountType, Integer> countMap = aggregate.getCountByAccountType();
 
-        if (tweet.isVerifiedUser()) {
-            int oldCount = aggregate.getCountByAccountType().get(TweetAggregate.AccountType.VERIFIED);
-            countMap.put(TweetAggregate.AccountType.VERIFIED, oldCount + 1);
+        if (tweet.isUserHasOneThousandFollowers()) {
+            int oldCount = aggregate.getCountByAccountType().get(TweetAggregate.AccountType.ONE_THOUSAND_FOLLOWERS);
+            countMap.put(TweetAggregate.AccountType.ONE_THOUSAND_FOLLOWERS, oldCount + 1);
         } else {
-            int oldCount = aggregate.getCountByAccountType().get(TweetAggregate.AccountType.UNVERIFIED);
-            countMap.put(TweetAggregate.AccountType.UNVERIFIED, oldCount + 1);
+            int oldCount = aggregate.getCountByAccountType().get(TweetAggregate.AccountType.LESS_THAN_ONE_THOUSAND_FOLLOWERS);
+            countMap.put(TweetAggregate.AccountType.LESS_THAN_ONE_THOUSAND_FOLLOWERS, oldCount + 1);
         }
 
         logger.info("Merged one tweet data into aggregate for: " + key);

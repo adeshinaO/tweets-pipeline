@@ -12,11 +12,11 @@ public class DataPacket {
 
     private List<Data> data = new ArrayList<>();
 
-    @JsonProperty("unverified_total")
-    private int totalTweetsUnverifiedUsers;
+    @JsonProperty("thousand_followers_total")
+    private int totalThousandFollowers;
 
-    @JsonProperty("verified_total")
-    private int totalTweetsVerifiedUsers;
+    @JsonProperty("less_than_thousand_followers_total")
+    private int totalLessThanThousandFollowers;
 
     @JsonProperty("build_time")
     private ZonedDateTime buildTime;
@@ -29,16 +29,16 @@ public class DataPacket {
         this.data.addAll(data);
     }
 
-    public int getTotalTweetsUnverifiedUsers() {
-        return totalTweetsUnverifiedUsers;
+    public int getTotalLessThanThousandFollowers() {
+        return totalLessThanThousandFollowers;
     }
 
-    public int getTotalTweetsVerifiedUsers() {
-        return totalTweetsVerifiedUsers;
+    public int getTotalThousandFollowers() {
+        return totalThousandFollowers;
     }
 
-    public void setTotalTweetsVerifiedUsers(int totalTweetsVerifiedUsers) {
-        this.totalTweetsVerifiedUsers = totalTweetsVerifiedUsers;
+    public void setTotalThousandFollowers(int totalThousandFollowers) {
+        this.totalThousandFollowers = totalThousandFollowers;
     }
 
     public ZonedDateTime getBuildTime() {
@@ -49,34 +49,36 @@ public class DataPacket {
         this.buildTime = buildTime;
     }
 
-    public void setTotalTweetsUnverifiedUsers(int totalTweetsUnverifiedUsers) {
-        this.totalTweetsUnverifiedUsers = totalTweetsUnverifiedUsers;
+    public void setTotalLessThanThousandFollowers(int totalLessThanThousandFollowers) {
+        this.totalLessThanThousandFollowers = totalLessThanThousandFollowers;
     }
 
     public static class Data {
 
         private String term;
 
-        @JsonProperty("verified_users_percentage")
-        private double percentageTweetsByVerifiedUsers;
+        // Percentage of tweets from users with at least a thousand followers
+        @JsonProperty("thousand_followers_percentage")
+        private double percentageThousandFollowers;
 
-        @JsonProperty("unverified_users_percentage")
-        private double percentageTweetsByUnverifiedUsers;
+        // less than 1k followers.
+        @JsonProperty("less_than_thousand_followers_percentage")
+        private double percentageLessThanThousandFollowers;
 
-        public double getPercentageTweetsByUnverifiedUsers() {
-            return percentageTweetsByUnverifiedUsers;
+        public double getPercentageLessThanThousandFollowers() {
+            return percentageLessThanThousandFollowers;
         }
 
-        public void setPercentageTweetsByUnverifiedUsers(double percentageTweetsByUnverifiedUsers) {
-            this.percentageTweetsByUnverifiedUsers = percentageTweetsByUnverifiedUsers;
+        public void setPercentageLessThanThousandFollowers(double percentageLessThanThousandFollowers) {
+            this.percentageLessThanThousandFollowers = percentageLessThanThousandFollowers;
         }
 
-        public double getPercentageTweetsByVerifiedUsers() {
-            return percentageTweetsByVerifiedUsers;
+        public double getPercentageThousandFollowers() {
+            return percentageThousandFollowers;
         }
 
-        public void setPercentageTweetsByVerifiedUsers(double percentageTweetsByVerifiedUsers) {
-            this.percentageTweetsByVerifiedUsers = percentageTweetsByVerifiedUsers;
+        public void setPercentageThousandFollowers(double percentageThousandFollowers) {
+            this.percentageThousandFollowers = percentageThousandFollowers;
         }
 
         public String getTerm() {
